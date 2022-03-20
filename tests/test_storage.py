@@ -28,3 +28,7 @@ class CloudflareImageStorageTests(TestCase):
     def test_open(self):
         name = "image_id"
         self.assertRaises(ApiException, self.storage.open, name)
+
+    def test_delete(self):
+        name = "image_id"
+        self.assertRaises(ApiException, self.storage.delete, name)

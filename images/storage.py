@@ -62,9 +62,7 @@ class CloudflareImagesStorage(Storage):
         """
         Delete the specified file from the storage system.
         """
-        raise NotImplementedError(
-            "subclasses of Storage must provide a delete() method"
-        )
+        self.service.delete(name)
 
     def exists(self, name):
         """
