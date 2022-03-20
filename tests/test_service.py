@@ -31,3 +31,7 @@ class CloudflareImageServiceTests(TestCase):
     def test_upload(self):
         file = ContentFile("this is a test image", name="test.txt")
         self.assertRaises(ApiException, self.service.upload, file)
+
+    def test_open_default_variant(self):
+        name = "id_image"
+        self.assertRaises(ApiException, self.service.open, name)
