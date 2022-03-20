@@ -14,10 +14,6 @@ class CloudflareImageStorageTests(TestCase):
     def setUp(self):
         self.storage = CloudflareImagesStorage()
 
-    def test_account_id(self):
-        account_id = self.storage.account_id
-        self.assertEqual(account_id, settings.CLOUDFLARE_IMAGES_ACCOUNT_ID)
-
-    def test_api_token(self):
-        api_token = self.storage.api_token
-        self.assertEqual(api_token, settings.CLOUDFLARE_IMAGES_API_TOKEN)
+    def test_has_service(self):
+        service = self.storage.service
+        self.assertTrue(service is not None)

@@ -15,13 +15,11 @@ class CloudflareImagesStorage(Storage):
 
     def __init__(self):
         """
-        Retrieves django settings
+        Setups the storage
         """
         super().__init__()
 
         self.service = CloudflareImagesService()
-        self.account_id = settings.CLOUDFLARE_IMAGES_ACCOUNT_ID
-        self.api_token = settings.CLOUDFLARE_IMAGES_API_TOKEN
 
     def _open(self, name, mode="rb"):
         """
