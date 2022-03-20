@@ -1,5 +1,5 @@
 """
-TODO
+Tests related to the CloudflareImagesService
 """
 
 from django.test import TestCase
@@ -10,7 +10,7 @@ from images.service import CloudflareImagesService
 
 class CloudflareImageServiceTests(TestCase):
     """
-    TODO
+    Test case for the CloudflareImagesService
     """
 
     def setUp(self):
@@ -25,5 +25,5 @@ class CloudflareImageServiceTests(TestCase):
         self.assertEqual(api_token, settings.CLOUDFLARE_IMAGES_API_TOKEN)
 
     def test_upload(self):
-        file = ContentFile("this is a test image")
+        file = ContentFile("this is a test image", name="test.txt")
         self.assertRaises(Exception, self.service.upload, file)
