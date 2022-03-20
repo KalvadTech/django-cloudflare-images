@@ -25,9 +25,11 @@ class CloudflareImagesStorage(Storage):
 
     def _open(self, name, mode="rb"):
         """
-        TODO
+        Returns the image as a File
+        mode has been kept to respect the original signature (and it fails without it)
+        but it wont have any impact
         """
-        raise NotImplementedError("Oops !")
+        return self.service.open(name)
 
     def _save(self, name, content):
         """
@@ -39,7 +41,7 @@ class CloudflareImagesStorage(Storage):
 
     def get_valid_name(self, name):
         """
-        TODO
+        TODO - need to clean the name
         """
         return name
 
@@ -51,15 +53,10 @@ class CloudflareImagesStorage(Storage):
 
     def generate_filename(self, filename):
         """
-        TODO
+        TODO - this originally changed the name to a UUID, but cloudflare images
+        already creates an ID as a UUID V4 for you.
         """
         return filename
-
-    def path(self, name):
-        """
-        TODO
-        """
-        raise NotImplementedError("Oops !")
 
     def delete(self, name):
         """

@@ -21,6 +21,10 @@ class CloudflareImageStorageTests(TestCase):
         self.assertTrue(service is not None)
 
     def test_save(self):
-        name = "test.txt"
+        name = "test.jpg"
         content = ContentFile("this is a test image")
         self.assertRaises(ApiException, self.storage.save, name, content)
+
+    def test_open(self):
+        name = "image_id"
+        self.assertRaises(ApiException, self.storage.open, name)

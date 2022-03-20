@@ -35,3 +35,7 @@ class CloudflareImageServiceTests(TestCase):
     def test_open_default_variant(self):
         name = "id_image"
         self.assertRaises(ApiException, self.service.open, name)
+
+    def test_delete(self):
+        name = "id_image"
+        self.assertRaises(ApiException, self.service.delete, name)

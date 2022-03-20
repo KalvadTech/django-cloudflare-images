@@ -67,3 +67,21 @@ class CloudflareImagesService:
             raise ApiException(response.content)
 
         return File(response.content, name=name)
+
+    def delete(self, name):
+        """
+        Deletes a file if it exists, otherwise raise an exception
+        """
+
+        url = "https://api.cloudflare.com/client/v4/accounts/{}/images/v1/{}".format(
+            self.account_id, name
+        )
+
+        headers = {"Authorization": "Bearer {}".format(self.api_token)}
+
+        response = requests.delete(url, headers=headers)
+        response_body = response.json()
+
+        status_code = response.status_code
+        if status_code != 200:
+            raise ApiException(str(response_body.get("errors")))
