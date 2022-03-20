@@ -21,14 +21,26 @@ CLOUDFLARE_IMAGES_API_TOKEN = "YYY"
 
 ## Development
 
-Packaging:
+Installing for development:
 
 ```sh
-python setup.py develop
+make install
 ```
 
-Tests:
+Cleaning the installation:
 
 ```sh
-DJANGO_SETTINGS_MODULE=tests.settings django-admin test
+make clean
+```
+
+Format the code:
+
+```sh
+make black
+```
+
+Running all tests:
+
+```sh
+make test
 ```

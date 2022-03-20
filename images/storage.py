@@ -10,6 +10,7 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import Storage
 from images.service import CloudflareImagesService
 
+
 class CloudflareImagesStorage(Storage):
     """
     Django storage for Cloudflare Images
@@ -53,7 +54,7 @@ class CloudflareImagesStorage(Storage):
         """
         TODO: this probably will be a problem with the path
         """
-        extension = filename.split('.').pop()
+        extension = filename.split(".").pop()
         filename = str(uuid.uuidv4())
         return "{}.{}".format(filename, extension)
 

@@ -28,11 +28,9 @@ class CloudflareImagesService:
             self.account_id
         )
 
-        headers = {
-            "Authorization": "Bearer {}".format(self.api_token)
-        }
+        headers = {"Authorization": "Bearer {}".format(self.api_token)}
 
-        files = {'file': file}
+        files = {"file": file}
 
         response = requests.post(url, headers=headers, files=files)
         response_body = response.json()
