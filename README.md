@@ -18,3 +18,17 @@ CLOUDFLARE_IMAGES_ACCOUNT_ID = "XXX"
 CLOUDFLARE_IMAGES_API_TOKEN = "YYY"
 
 ```
+
+## Development
+
+Packaging:
+
+```sh
+python setup.py develop
+```
+
+Tests:
+
+```sh
+DJANGO_SETTINGS_MODULE=tests.settings django-admin test
+```

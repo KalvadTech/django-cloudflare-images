@@ -16,8 +16,8 @@ class CloudflareImageStorage(Storage):
         """
         super().__init__()
 
-        self.account_id = settings.get('CLOUDFLARE_IMAGES_ACCOUNT_ID')
-        self.api_token = settings.get('CLOUDFLARE_IMAGES_API_TOKEN')
+        self.account_id = settings.CLOUDFLARE_IMAGES_ACCOUNT_ID
+        self.api_token = settings.CLOUDFLARE_IMAGES_API_TOKEN
 
         print(self.account_id)
         print(self.api_token)
