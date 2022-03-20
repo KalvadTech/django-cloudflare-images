@@ -16,6 +16,7 @@ setup(
     license='MIT',
     install_requires=[
         'Django>=4',
+        'requests==2.27.1'
     ]
 )
 
