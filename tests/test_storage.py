@@ -3,7 +3,7 @@ TODO
 """
 from django.test import TestCase
 from django.conf import settings
-from images.storage import CloudflareImageStorage
+from images.storage import CloudflareImagesStorage
 
 
 class CloudflareImageStorageTests(TestCase):
@@ -12,7 +12,7 @@ class CloudflareImageStorageTests(TestCase):
     """
 
     def setUp(self):
-        self.storage = CloudflareImageStorage()
+        self.storage = CloudflareImagesStorage()
 
     def test_account_id(self):
         account_id = self.storage.account_id
