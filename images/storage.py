@@ -6,6 +6,7 @@ Django's default storage class: https://github.com/django/django/blob/main/djang
 
 from django.conf import settings
 from django.core.files.storage import Storage
+from images.service import CloudflareImagesService
 
 class CloudflareImagesStorage(Storage):
     """
@@ -18,6 +19,7 @@ class CloudflareImagesStorage(Storage):
         """
         super().__init__()
 
+        self.service = CloudflareImagesService()
         self.account_id = settings.CLOUDFLARE_IMAGES_ACCOUNT_ID
         self.api_token = settings.CLOUDFLARE_IMAGES_API_TOKEN
 
