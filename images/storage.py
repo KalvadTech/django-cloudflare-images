@@ -43,12 +43,6 @@ class CloudflareImagesStorage(Storage):
         """
         return name
 
-    def get_alternative_name(self, file_root, file_ext):
-        """
-        TODO
-        """
-        raise NotImplementedError("Oops !")
-
     def get_available_name(self, name, max_length=None):
         """
         TODO
