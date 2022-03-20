@@ -51,14 +51,20 @@ class CloudflareImagesService:
 
         return response_body.get("result").get("id")
 
+    def get_url(self, name, variant="public"):
+        """
+        Returns the public URL for the given image ID
+        """
+        return "https://imagedelivery.net/{}/{}/{}".format(
+            self.account_hash, name, variant
+        )
+
     def open(self, name, variant="public"):
         """
         Retrieves a file and turn it, otherwise raise an exception
         """
 
-        url = "https://imagedelivery.net/{}/{}/{}".format(
-            self.account_hash, name, variant
-        )
+        url = self.get_url(name, variant)
 
         response = requests.get(url)
 

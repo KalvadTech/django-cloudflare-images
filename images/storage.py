@@ -93,7 +93,7 @@ class CloudflareImagesStorage(Storage):
         Return an absolute URL where the file's contents can be accessed
         directly by a web browser.
         """
-        raise NotImplementedError("subclasses of Storage must provide a url() method")
+        return self.service.get_url(name)
 
     def get_accessed_time(self, name):
         """

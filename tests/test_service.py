@@ -39,3 +39,8 @@ class CloudflareImageServiceTests(TestCase):
     def test_delete(self):
         name = "id_image"
         self.assertRaises(ApiException, self.service.delete, name)
+
+    def test_get_url(self):
+        name = "id_image"
+        url = self.service.get_url(name)
+        self.assertTrue(url is not None)

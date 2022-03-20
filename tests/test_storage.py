@@ -32,3 +32,8 @@ class CloudflareImageStorageTests(TestCase):
     def test_delete(self):
         name = "image_id"
         self.assertRaises(ApiException, self.storage.delete, name)
+
+    def test_url(self):
+        name = "image_id"
+        url = self.storage.url(name)
+        self.assertTrue(url is not None)
