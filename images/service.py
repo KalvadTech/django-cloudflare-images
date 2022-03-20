@@ -20,7 +20,7 @@ class CloudflareImagesService:
         self.account_id = settings.CLOUDFLARE_IMAGES_ACCOUNT_ID
         self.api_token = settings.CLOUDFLARE_IMAGES_API_TOKEN
 
-    def upload_file(self, file):
+    def upload(self, file):
         """
         Uploads a file and return its name, otherwise raise an exception
         """
@@ -32,7 +32,7 @@ class CloudflareImagesService:
             "Authorization": "Bearer {}".format(self.api_token)
         }
 
-        files = {'file': open(file)}
+        files = {'file': file}
 
         response = requests.post(url, headers=headers, files=files)
         response_body = response.json()

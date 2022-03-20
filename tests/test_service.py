@@ -1,8 +1,10 @@
 """
 TODO
 """
+
 from django.test import TestCase
 from django.conf import settings
+from django.core.files.base import ContentFile
 from images.service import CloudflareImagesService
 
 
@@ -21,3 +23,7 @@ class CloudflareImageServiceTests(TestCase):
     def test_api_token(self):
         api_token = self.service.api_token
         self.assertEqual(api_token, settings.CLOUDFLARE_IMAGES_API_TOKEN)
+
+    def test_upload(self):
+        file = ContentFile("this is a test image")
+        self.service.upload(file)
