@@ -26,4 +26,4 @@ class CloudflareImageServiceTests(TestCase):
 
     def test_upload(self):
         file = ContentFile("this is a test image")
-        self.service.upload(file)
+        self.assertRaises(Exception, self.service.upload, file)
