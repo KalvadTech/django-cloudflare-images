@@ -44,3 +44,9 @@ Running all tests:
 ```sh
 make test
 ```
+
+Package:
+
+```sh
+make package
+```
