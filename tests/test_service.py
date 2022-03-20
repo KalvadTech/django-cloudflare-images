@@ -5,7 +5,7 @@ Tests related to the CloudflareImagesService
 from django.test import TestCase
 from django.conf import settings
 from django.core.files.base import ContentFile
-from images.service import CloudflareImagesService
+from images.service import CloudflareImagesService, ApiException
 
 
 class CloudflareImageServiceTests(TestCase):
@@ -26,4 +26,4 @@ class CloudflareImageServiceTests(TestCase):
 
     def test_upload(self):
         file = ContentFile("this is a test image", name="test.txt")
-        self.assertRaises(Exception, self.service.upload, file)
+        self.assertRaises(ApiException, self.service.upload, file)

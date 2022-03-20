@@ -6,6 +6,14 @@ from django.conf import settings
 import requests
 
 
+class ApiException(Exception):
+    """
+    Exception raised by Cloudflare Images API
+    """
+
+    pass
+
+
 class CloudflareImagesService:
     """
     API client for Cloudflare Images
@@ -37,6 +45,6 @@ class CloudflareImagesService:
 
         status_code = response.status_code
         if status_code != 200:
-            raise Exception(str(response_body.get("errors")))
+            raise ApiException(str(response_body.get("errors")))
 
         return response_body.get("result").get("filename")

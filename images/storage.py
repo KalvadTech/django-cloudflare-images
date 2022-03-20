@@ -4,7 +4,7 @@ default Storage (see README.md)
 Django's default storage class: https://github.com/django/django/blob/main/django/core/files/storage.py
 """
 
-import uuid
+from uuid import uuid4
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.storage import Storage
@@ -35,8 +35,8 @@ class CloudflareImagesStorage(Storage):
         Tries to upload the file and return its name
         """
         new_name = self.generate_filename(name)
-        file = ContentFile(content, name=name)
-        return self.service.upload(file)
+        content.name = new_name
+        return self.service.upload(content)
 
     def get_valid_name(self, name):
         """
@@ -48,14 +48,14 @@ class CloudflareImagesStorage(Storage):
         """
         TODO
         """
-        raise NotImplementedError("Oops !")
+        return self.generate_filename(name)
 
     def generate_filename(self, filename):
         """
         TODO: this probably will be a problem with the path
         """
         extension = filename.split(".").pop()
-        filename = str(uuid.uuidv4())
+        filename = str(uuid4())
         return "{}.{}".format(filename, extension)
 
     def path(self, name):
