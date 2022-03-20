@@ -27,6 +27,7 @@ class CloudflareImagesService:
 
         self.account_id = settings.CLOUDFLARE_IMAGES_ACCOUNT_ID
         self.api_token = settings.CLOUDFLARE_IMAGES_API_TOKEN
+        self.account_hash = settings.CLOUDFLARE_IMAGES_ACCOUNT_HASH
 
     def upload(self, file):
         """
@@ -47,4 +48,4 @@ class CloudflareImagesService:
         if status_code != 200:
             raise ApiException(str(response_body.get("errors")))
 
-        return response_body.get("result").get("filename")
+        return response_body.get("result").get("id")

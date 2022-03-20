@@ -4,7 +4,6 @@ default Storage (see README.md)
 Django's default storage class: https://github.com/django/django/blob/main/django/core/files/storage.py
 """
 
-from uuid import uuid4
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.storage import Storage
@@ -52,11 +51,9 @@ class CloudflareImagesStorage(Storage):
 
     def generate_filename(self, filename):
         """
-        TODO: this probably will be a problem with the path
+        TODO
         """
-        extension = filename.split(".").pop()
-        filename = str(uuid4())
-        return "{}.{}".format(filename, extension)
+        return filename
 
     def path(self, name):
         """

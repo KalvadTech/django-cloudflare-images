@@ -24,6 +24,10 @@ class CloudflareImageServiceTests(TestCase):
         api_token = self.service.api_token
         self.assertEqual(api_token, settings.CLOUDFLARE_IMAGES_API_TOKEN)
 
+    def test_account_hash(self):
+        account_hash = self.service.account_hash
+        self.assertEqual(account_hash, settings.CLOUDFLARE_IMAGES_ACCOUNT_HASH)
+
     def test_upload(self):
         file = ContentFile("this is a test image", name="test.txt")
         self.assertRaises(ApiException, self.service.upload, file)
