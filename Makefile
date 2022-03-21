@@ -7,6 +7,7 @@ install:
 clean:
 	rm -rf env/
 	rm -rf django_cloudflare_images.egg-info/
+	rm -rf build/
 
 format:
 	. env/bin/activate && black . --exclude=env
@@ -16,3 +17,6 @@ test:
 
 package:
 	. env/bin/activate && python setup.py develop
+
+build:
+	. env/bin/activate && python setup.py build
