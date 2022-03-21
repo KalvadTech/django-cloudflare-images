@@ -45,8 +45,11 @@ Running all tests:
 make test
 ```
 
-Package:
+Setup.py commands:
 
 ```sh
-make package
+make package-develop
+make package-build
+make package-install
+make package-sdist
 ```
