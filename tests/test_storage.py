@@ -3,9 +3,9 @@ Test related to the CloudflareImagesStorage
 """
 from django.test import TestCase
 from django.conf import settings
-from django.core.files.base import ContentFile
 from images.storage import CloudflareImagesStorage
 from images.service import ApiException
+from .utils import get_dummy_image, get_dummy_image_name
 
 
 class CloudflareImageStorageTests(TestCase):
@@ -21,8 +21,8 @@ class CloudflareImageStorageTests(TestCase):
         self.assertTrue(service is not None)
 
     def test_save(self):
-        name = "test.jpg"
-        content = ContentFile("this is a test image")
+        name = get_dummy_image_name()
+        content = get_dummy_image()
         self.assertRaises(ApiException, self.storage.save, name, content)
 
     def test_open(self):

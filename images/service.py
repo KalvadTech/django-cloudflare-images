@@ -86,8 +86,7 @@ class CloudflareImagesService:
         headers = {"Authorization": "Bearer {}".format(self.api_token)}
 
         response = requests.delete(url, headers=headers)
-        response_body = response.json()
 
         status_code = response.status_code
         if status_code != 200:
-            raise ApiException(str(response_body.get("errors")))
+            raise ApiException(str(response.text))
