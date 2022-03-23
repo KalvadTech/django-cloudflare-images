@@ -4,7 +4,7 @@ Tests related to the CloudflareImagesService
 
 from django.test import TestCase
 from django.conf import settings
-from images.service import CloudflareImagesService, ApiException
+from cloudflare_images.service import CloudflareImagesService, ApiException
 from .utils import get_dummy_image
 
 

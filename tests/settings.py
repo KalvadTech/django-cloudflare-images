@@ -1,4 +1,4 @@
-INSTALLED_APPS = ("images",)
+INSTALLED_APPS = ("cloudflare_images",)
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",

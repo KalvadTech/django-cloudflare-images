@@ -3,8 +3,8 @@ Test related to the CloudflareImagesStorage
 """
 from django.test import TestCase
 from django.conf import settings
-from images.storage import CloudflareImagesStorage
-from images.service import ApiException
+from cloudflare_images.storage import CloudflareImagesStorage
+from cloudflare_images.service import ApiException
 from .utils import get_dummy_image, get_dummy_image_name
 
 
