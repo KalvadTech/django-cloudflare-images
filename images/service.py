@@ -24,8 +24,6 @@ class CloudflareImagesService:
         """
         Retrieves django settings
         """
-        super().__init__()
-
         self.account_id = settings.CLOUDFLARE_IMAGES_ACCOUNT_ID
         self.api_token = settings.CLOUDFLARE_IMAGES_API_TOKEN
         self.account_hash = settings.CLOUDFLARE_IMAGES_ACCOUNT_HASH

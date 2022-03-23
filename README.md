@@ -16,7 +16,7 @@ You need to add the following your settings.py:
 DEFAULT_FILE_STORAGE = "images.storage.CloudflareImageStorage"
 CLOUDFLARE_IMAGES_ACCOUNT_ID = "XXX"
 CLOUDFLARE_IMAGES_API_TOKEN = "YYY"
-
+CLOUDFLARE_IMAGES_ACCOUNT_HASH = "ZZZ"
 ```
 
 ## Development
@@ -36,7 +36,7 @@ make clean
 Format the code:
 
 ```sh
-make black
+make format
 ```
 
 Running all tests:
@@ -53,3 +53,11 @@ make package-build
 make package-install
 make package-sdist
 ```
+
+## TODO
+
+This is a list of non exhaustive list of things I would like to add to the project:
+
+ * Ability to pass down variants instead of hardcoding "public"
+ * Support custom domains (optional)
+ * Functional tests with real credentials (to be passed in the environment)
