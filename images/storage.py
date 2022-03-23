@@ -26,14 +26,16 @@ class CloudflareImagesStorage(Storage):
     def _open(self, name, mode="rb"):
         """
         Returns the image as a File
-        mode has been kept to respect the original signature (and it fails without it)
-        but it wont have any impact
+        The parameter "mode" has been kept to respect the original signature
+        (and it fails without it) but it wont have any impact
+        Has to be implemented.
         """
         return self.service.open(name)
 
     def _save(self, name, content):
         """
         Tries to upload the file and return its name
+        Has to be implemented.
         """
         new_name = self.generate_filename(name)
         content.name = new_name
@@ -41,26 +43,29 @@ class CloudflareImagesStorage(Storage):
 
     def get_valid_name(self, name):
         """
-        TODO - need to clean the name
+        Returns a valid name for the file.
+        Has to be implemented.
         """
         return name
 
     def get_available_name(self, name, max_length=None):
         """
-        TODO
+        Returns the available name for the file.
+        Has to be implemented.
         """
         return self.generate_filename(name)
 
     def generate_filename(self, filename):
         """
-        TODO - this originally changed the name to a UUID, but cloudflare images
-        already creates an ID as a UUID V4 for you.
+        Returns the name of the file.
+        Has to be implemented.
         """
         return filename
 
     def delete(self, name):
         """
-        Delete the specified file from the storage system.
+        Tries to delete the specified file from the storage system.
+        Has to be implemented.
         """
         self.service.delete(name)
 
@@ -92,6 +97,7 @@ class CloudflareImagesStorage(Storage):
         """
         Return an absolute URL where the file's contents can be accessed
         directly by a web browser.
+        Has to be implemented.
         """
         return self.service.get_url(name)
 
