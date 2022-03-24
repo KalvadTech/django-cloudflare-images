@@ -9,6 +9,7 @@ setup(
     version="0.2.0",
     packages=["cloudflare_images"],
     description="Cloudflare Images integration for Django",
+    long_description_content_type="text/markdown",
     long_description=README,
     author="Pierre Guillemot",
     author_email="pierre@kalvad.com",
