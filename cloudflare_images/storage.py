@@ -99,7 +99,13 @@ class CloudflareImagesStorage(Storage):
         directly by a web browser.
         Has to be implemented.
         """
-        return self.service.get_url(name)
+        return self.url_with_variant(name, "public")
+
+    def url_with_variant(self, name, variant):
+        """
+        Custom methods which allow to pass a variant and respect the original signature of `url`
+        """
+        return self.service.get_url(name, variant)
 
     def get_accessed_time(self, name):
         """

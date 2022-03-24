@@ -42,5 +42,6 @@ class CloudflareImageServiceTests(TestCase):
 
     def test_get_url(self):
         name = "id_image"
-        url = self.service.get_url(name)
+        variant = "public"
+        url = self.service.get_url(name, variant)
         self.assertTrue(url is not None)

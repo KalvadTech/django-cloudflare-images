@@ -13,11 +13,25 @@ pip install django-cloudflare-images
 You need to add the following your settings.py:
 
 ```python
-DEFAULT_FILE_STORAGE = "cloudflare_images.storage.CloudflareImageStorage"
+DEFAULT_FILE_STORAGE = "cloudflare_images.storage.CloudflareImagesStorage"
 CLOUDFLARE_IMAGES_ACCOUNT_ID = "XXX"
 CLOUDFLARE_IMAGES_API_TOKEN = "YYY"
 CLOUDFLARE_IMAGES_ACCOUNT_HASH = "ZZZ"
 ```
+
+If you wish to use a default variant for a specific field you need to change your `ImageField` to a `CloudflareImagesField` see example below:
+
+```python
+from cloudflare_images.field import CloudflareImagesField
+from django.db import models
+
+class MyModel(models.Model):
+    image = CloudflareImagesField(variant="custom")
+
+
+```
+
+Please note that you will need to migrate your model(s) once you swapped the field(s). No SQL will actually be applied (you can check by running `sqlmigrate <module> <number>`).
 
 ## Development
 
@@ -58,6 +72,5 @@ make package-sdist
 
 This is a list of non exhaustive list of things I would like to add to the project:
 
- * Ability to pass down variants instead of hardcoding "public"
  * Support custom domains (optional)
  * Functional tests with real credentials (to be passed in the environment)

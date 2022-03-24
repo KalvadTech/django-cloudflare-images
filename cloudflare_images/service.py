@@ -49,7 +49,7 @@ class CloudflareImagesService:
 
         return response_body.get("result").get("id")
 
-    def get_url(self, name, variant="public"):
+    def get_url(self, name, variant):
         """
         Returns the public URL for the given image ID
         """
