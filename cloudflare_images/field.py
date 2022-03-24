@@ -23,6 +23,7 @@ class CloudflareImagesFieldFile(ImageFieldFile):
     Inherits ImageField's attr class
     """
 
+    @property
     def url(self):
         """
         Overriding the default url method to pass our variant
