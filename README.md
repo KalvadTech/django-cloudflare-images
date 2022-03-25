@@ -73,4 +73,6 @@ make package-sdist
 This is a list of non exhaustive list of things I would like to add to the project:
 
  * Support custom domains (optional)
+ * Supprot global default variant instead of "public"
+ * Use Tox to test multiple python/django versions
  * Functional tests with real credentials (to be passed in the environment)
