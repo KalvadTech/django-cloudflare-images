@@ -14,7 +14,7 @@ format:
 	. env/bin/activate && black . --exclude=env
 
 test:
-	. env/bin/activate && DJANGO_SETTINGS_MODULE=tests.settings django-admin test
+	. env/bin/activate && tox
 
 package-develop:
 	. env/bin/activate && python setup.py develop

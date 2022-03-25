@@ -24,6 +24,7 @@ class CloudflareImageStorageTests(TestCase):
         name = get_dummy_image_name()
         content = get_dummy_image()
         self.assertRaises(ApiException, self.storage.save, name, content)
+        content.close()
 
     def test_open(self):
         name = "image_id"

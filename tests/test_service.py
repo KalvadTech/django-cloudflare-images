@@ -31,6 +31,7 @@ class CloudflareImageServiceTests(TestCase):
     def test_upload(self):
         file = get_dummy_image()
         self.assertRaises(ApiException, self.service.upload, file)
+        file.close()
 
     def test_open_default_variant(self):
         name = "image_id"
