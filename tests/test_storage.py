@@ -36,10 +36,12 @@ class CloudflareImageStorageTests(TestCase):
     def test_url(self):
         name = "image_id"
         url = self.storage.url(name)
-        self.assertTrue(url is not None)
+        hardcoded_url = "https://imagedelivery.net/account_hash/image_id/public"
+        self.assertEqual(url, hardcoded_url)
 
     def test_url_with_variant(self):
         name = "image_id"
         variant = "custom"
         url = self.storage.url_with_variant(name, variant)
-        self.assertTrue(url is not None)
+        hardcoded_url = "https://imagedelivery.net/account_hash/image_id/custom"
+        self.assertEqual(url, hardcoded_url)

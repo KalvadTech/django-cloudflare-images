@@ -33,15 +33,16 @@ class CloudflareImageServiceTests(TestCase):
         self.assertRaises(ApiException, self.service.upload, file)
 
     def test_open_default_variant(self):
-        name = "id_image"
+        name = "image_id"
         self.assertRaises(ApiException, self.service.open, name)
 
     def test_delete(self):
-        name = "id_image"
+        name = "image_id"
         self.assertRaises(ApiException, self.service.delete, name)
 
     def test_get_url(self):
-        name = "id_image"
+        name = "image_id"
         variant = "public"
         url = self.service.get_url(name, variant)
-        self.assertTrue(url is not None)
+        hardcoded_url = "https://imagedelivery.net/account_hash/image_id/public"
+        self.assertEqual(url, hardcoded_url)
