@@ -53,6 +53,11 @@ class CloudflareImagesService:
         """
         Returns the public URL for the given image ID
         """
+        if hasattr(settings, "CLOUDFLARE_IMAGES_DOMAIN"):
+            return "https://{}/cdn-cgi/imagedelivery/{}/{}/{}".format(
+                settings.CLOUDFLARE_IMAGES_DOMAIN, self.account_hash, name, variant
+            )
+
         return "https://imagedelivery.net/{}/{}/{}".format(
             self.account_hash, name, variant
         )

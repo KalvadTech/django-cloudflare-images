@@ -1,7 +1,7 @@
 """
 Test related to the CloudflareImagesStorage
 """
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.conf import settings
 from cloudflare_images.storage import CloudflareImagesStorage
 from cloudflare_images.service import ApiException
@@ -45,4 +45,19 @@ class CloudflareImageStorageTests(TestCase):
         variant = "custom"
         url = self.storage.url_with_variant(name, variant)
         hardcoded_url = "https://imagedelivery.net/account_hash/image_id/custom"
+        self.assertEqual(url, hardcoded_url)
+
+    @override_settings(CLOUDFLARE_IMAGES_DOMAIN="example.com")
+    def test_url_with_custom_domain(self):
+        name = "image_id"
+        url = self.storage.url(name)
+        hardcoded_url = "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/public"
+        self.assertEqual(url, hardcoded_url)
+
+    @override_settings(CLOUDFLARE_IMAGES_DOMAIN="example.com")
+    def test_url_with_variant_with_custom_domain(self):
+        name = "image_id"
+        variant = "custom"
+        url = self.storage.url_with_variant(name, variant)
+        hardcoded_url = "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/custom"
         self.assertEqual(url, hardcoded_url)

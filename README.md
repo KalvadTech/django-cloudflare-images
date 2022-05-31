@@ -33,6 +33,13 @@ class MyModel(models.Model):
 
 Please note that you will need to migrate your model(s) once you swapped the field(s). No SQL will actually be applied (you can check by running `sqlmigrate <module> <number>`).
 
+If you wish to use a custom domain to serve your images you need to add the following to your settings.py:
+
+```python
+CLOUDFLARE_IMAGES_DOMAIN = "example.com"
+
+```
+
 ## Development
 
 Installing for development:
@@ -72,6 +79,5 @@ make package-sdist
 
 This is a list of non exhaustive list of things I would like to add to the project:
 
- * Support custom domains (optional)
- * Supprot global default variant instead of "public"
+ * Support global default variant instead of "public"
  * Functional tests with real credentials (to be passed in the environment)

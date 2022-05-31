@@ -2,7 +2,7 @@
 Tests related to the CloudflareImagesField
 """
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.conf import settings
 from cloudflare_images.field import CloudflareImagesField, CloudflareImagesFieldFile
 
@@ -39,4 +39,20 @@ class CloudflareImageFieldFileTests(TestCase):
         field_file = CloudflareImagesFieldFile(None, field, "image_id")
         url = field_file.url
         hardcoded_url = "https://imagedelivery.net/account_hash/image_id/custom"
+        self.assertEqual(url, hardcoded_url)
+
+    @override_settings(CLOUDFLARE_IMAGES_DOMAIN="example.com")
+    def test_url_default_variant_with_custom_domain(self):
+        field = CloudflareImagesField()
+        field_file = CloudflareImagesFieldFile(None, field, "image_id")
+        url = field_file.url
+        hardcoded_url = "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/public"
+        self.assertEqual(url, hardcoded_url)
+
+    @override_settings(CLOUDFLARE_IMAGES_DOMAIN="example.com")
+    def test_url_custom_variant_with_custom_domain(self):
+        field = CloudflareImagesField(variant="custom")
+        field_file = CloudflareImagesFieldFile(None, field, "image_id")
+        url = field_file.url
+        hardcoded_url = "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/custom"
         self.assertEqual(url, hardcoded_url)

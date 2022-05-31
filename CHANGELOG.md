@@ -1,4 +1,10 @@
-# 0.2.0
+# 0.3.0
+
+## Features
+
+ * Added support for custom domain name when serving images
+
+## 0.2.0
 
 ## Features
 

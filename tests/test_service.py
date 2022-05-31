@@ -2,7 +2,7 @@
 Tests related to the CloudflareImagesService
 """
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.conf import settings
 from cloudflare_images.service import CloudflareImagesService, ApiException
 from .utils import get_dummy_image
@@ -46,4 +46,12 @@ class CloudflareImageServiceTests(TestCase):
         variant = "public"
         url = self.service.get_url(name, variant)
         hardcoded_url = "https://imagedelivery.net/account_hash/image_id/public"
+        self.assertEqual(url, hardcoded_url)
+
+    @override_settings(CLOUDFLARE_IMAGES_DOMAIN="example.com")
+    def test_get_url_with_custom_domain(self):
+        name = "image_id"
+        variant = "public"
+        url = self.service.get_url(name, variant)
+        hardcoded_url = "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/public"
         self.assertEqual(url, hardcoded_url)
