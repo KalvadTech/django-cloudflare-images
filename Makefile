@@ -6,12 +6,13 @@ install:
 
 clean:
 	rm -rf env/
+	rm -rf .tox/
 	rm -rf django_cloudflare_images.egg-info/
 	rm -rf build/
 	rm -rf dist/
 
 format:
-	. env/bin/activate && black . --exclude=env
+	. env/bin/activate && black . --extend-exclude=env
 
 test:
 	. env/bin/activate && tox
