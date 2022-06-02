@@ -53,5 +53,7 @@ class CloudflareImageServiceTests(TestCase):
         name = "image_id"
         variant = "public"
         url = self.service.get_url(name, variant)
-        hardcoded_url = "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/public"
+        hardcoded_url = (
+            "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/public"
+        )
         self.assertEqual(url, hardcoded_url)

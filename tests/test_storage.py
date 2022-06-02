@@ -51,7 +51,9 @@ class CloudflareImageStorageTests(TestCase):
     def test_url_with_custom_domain(self):
         name = "image_id"
         url = self.storage.url(name)
-        hardcoded_url = "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/public"
+        hardcoded_url = (
+            "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/public"
+        )
         self.assertEqual(url, hardcoded_url)
 
     @override_settings(CLOUDFLARE_IMAGES_DOMAIN="example.com")
@@ -59,5 +61,7 @@ class CloudflareImageStorageTests(TestCase):
         name = "image_id"
         variant = "custom"
         url = self.storage.url_with_variant(name, variant)
-        hardcoded_url = "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/custom"
+        hardcoded_url = (
+            "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/custom"
+        )
         self.assertEqual(url, hardcoded_url)

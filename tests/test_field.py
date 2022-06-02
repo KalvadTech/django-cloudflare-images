@@ -46,7 +46,9 @@ class CloudflareImageFieldFileTests(TestCase):
         field = CloudflareImagesField()
         field_file = CloudflareImagesFieldFile(None, field, "image_id")
         url = field_file.url
-        hardcoded_url = "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/public"
+        hardcoded_url = (
+            "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/public"
+        )
         self.assertEqual(url, hardcoded_url)
 
     @override_settings(CLOUDFLARE_IMAGES_DOMAIN="example.com")
@@ -54,5 +56,7 @@ class CloudflareImageFieldFileTests(TestCase):
         field = CloudflareImagesField(variant="custom")
         field_file = CloudflareImagesFieldFile(None, field, "image_id")
         url = field_file.url
-        hardcoded_url = "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/custom"
+        hardcoded_url = (
+            "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/custom"
+        )
         self.assertEqual(url, hardcoded_url)
