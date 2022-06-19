@@ -6,7 +6,7 @@ README = open(os.path.join(here, "README.md")).read()
 
 setup(
     name="django-cloudflare-images",
-    version="0.3.0",
+    version="0.3.1",
     packages=["cloudflare_images"],
     description="Cloudflare Images integration for Django",
     long_description_content_type="text/markdown",

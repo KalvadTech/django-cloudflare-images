@@ -1,4 +1,10 @@
-# 0.3.0
+# 0.3.1
+
+# Misc
+
+ * Set the minimum requirements for `requests` to 2.20.0 (latest secure release to date)
+
+## 0.3.0
 
 ## Features
 
