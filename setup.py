@@ -15,6 +15,6 @@ setup(
     author_email="pierre@kalvad.com",
     url="https://github.com/KalvadTech/django-cloudflare-images/",
     license="MIT",
-    install_requires=["Django>=4", "requests==2.27.1"],
+    install_requires=["Django>=4", "requests>=2.20.0"],
     extras_require={"dev": ["black==22.3.0", "tox==3.24.5"]},
 )
