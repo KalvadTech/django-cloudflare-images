@@ -65,3 +65,31 @@ class CloudflareImageStorageTests(TestCase):
             "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/custom"
         )
         self.assertEqual(url, hardcoded_url)
+
+    def test_get_valid_name(self):
+        name = "image_id"
+        self.assertEqual(name, self.storage.get_valid_name(name))
+
+    def test_exists(self):
+        name = "image_id"
+        self.assertRaises(NotImplementedError, self.storage.exists, name)
+
+    def test_listdir(self):
+        path = "/my/path"
+        self.assertRaises(NotImplementedError, self.storage.listdir, path)
+
+    def test_size(self):
+        name = "image_id"
+        self.assertRaises(NotImplementedError, self.storage.size, name)
+
+    def test_get_accessed_time(self):
+        name = "image_id"
+        self.assertRaises(NotImplementedError, self.storage.get_accessed_time, name)
+
+    def test_get_created_time(self):
+        name = "image_id"
+        self.assertRaises(NotImplementedError, self.storage.get_created_time, name)
+
+    def test_get_modified_time(self):
+        name = "image_id"
+        self.assertRaises(NotImplementedError, self.storage.get_modified_time, name)

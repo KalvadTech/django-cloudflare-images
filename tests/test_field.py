@@ -21,6 +21,16 @@ class CloudflareImageFieldTests(TestCase):
         field = CloudflareImagesField(variant=variant)
         self.assertEqual(field.variant, variant)
 
+    def test_deconstruct_default_variant(self):
+        field = CloudflareImagesField()
+        name, path, args, kwargs = field.deconstruct()
+        self.assertEqual(kwargs.get("variant"), "public")
+
+    def test_deconstruct_custom_variant(self):
+        variant = "custom"
+        field = CloudflareImagesField(variant=variant)
+        name, path, args, kwargs = field.deconstruct()
+        self.assertEqual(kwargs.get("variant"), variant)
 
 class CloudflareImageFieldFileTests(TestCase):
     """
