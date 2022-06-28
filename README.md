@@ -80,4 +80,4 @@ make package-sdist
 This is a list of non exhaustive list of things I would like to add to the project:
 
  * Support global default variant instead of "public"
- * Functional tests with real credentials (to be passed in the environment)
+ * Rewrite the service.py to be able to use mock requests
