@@ -32,6 +32,7 @@ class CloudflareImageFieldTests(TestCase):
         name, path, args, kwargs = field.deconstruct()
         self.assertEqual(kwargs.get("variant"), variant)
 
+
 class CloudflareImageFieldFileTests(TestCase):
     """
     Test case for the CloudflareImagesFieldFile
