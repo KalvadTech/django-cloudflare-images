@@ -4,7 +4,6 @@ Tests related to the CloudflareImagesService
 
 from unittest.mock import patch
 from django.test import TestCase, override_settings
-from django.conf import settings
 from cloudflare_images.service import CloudflareImagesService, ApiException
 from .utils import get_dummy_image, get_dummy_api_response
 

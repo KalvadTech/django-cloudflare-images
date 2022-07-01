@@ -1,9 +1,8 @@
 """
-Tests related o the Config
+Tests related to the Config
 """
 
 from django.test import TestCase, override_settings
-from django.conf import settings
 from cloudflare_images.config import Config
 
 
