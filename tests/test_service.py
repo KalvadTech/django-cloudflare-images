@@ -2,10 +2,11 @@
 Tests related to the CloudflareImagesService
 """
 
+from unittest.mock import patch
 from django.test import TestCase, override_settings
 from django.conf import settings
 from cloudflare_images.service import CloudflareImagesService, ApiException
-from .utils import get_dummy_image
+from .utils import get_dummy_image, get_dummy_api_response
 
 
 class CloudflareImageServiceTests(TestCase):
@@ -28,18 +29,48 @@ class CloudflareImageServiceTests(TestCase):
         account_hash = self.service.account_hash
         self.assertEqual(account_hash, settings.CLOUDFLARE_IMAGES_ACCOUNT_HASH)
 
-    def test_upload(self):
+    @patch("requests.post")
+    def test_failed_upload(self, mock_post):
+        mock_post.return_value = get_dummy_api_response(400, '{"errors": "test"}')
         file = get_dummy_image()
         self.assertRaises(ApiException, self.service.upload, file)
         file.close()
 
-    def test_open_default_variant(self):
+    @patch("requests.post")
+    def test_success_upload(self, mock_post):
+        mock_post.return_value = get_dummy_api_response(
+            200, '{"result": {"id": "test"}}'
+        )
+        file = get_dummy_image()
+        result_id = self.service.upload(file)
+        self.assertEqual(result_id, "test")
+        file.close()
+
+    @patch("requests.get")
+    def test_failed_open_default_variant(self, mock_get):
+        mock_get.return_value = get_dummy_api_response(400, "", False)
         name = "image_id"
         self.assertRaises(ApiException, self.service.open, name)
 
-    def test_delete(self):
+    @patch("requests.get")
+    def test_success_open_default_variant(self, mock_get):
+        mock_get.return_value = get_dummy_api_response(200, "content", False)
+        name = "image_id"
+        result = self.service.open(name)
+        self.assertEqual(result.name, name)
+        self.assertEqual(result.file, "content")
+
+    @patch("requests.delete")
+    def test_failed_delete(self, mock_delete):
+        mock_delete.return_value = get_dummy_api_response(400, "", False)
         name = "image_id"
         self.assertRaises(ApiException, self.service.delete, name)
+
+    @patch("requests.delete")
+    def test_success_delete(self, mock_delete):
+        mock_delete.return_value = get_dummy_api_response(200, "", False)
+        name = "image_id"
+        self.service.delete(name)
 
     def test_get_url(self):
         name = "image_id"
