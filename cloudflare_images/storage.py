@@ -4,10 +4,10 @@ default Storage (see README.md)
 Django's default storage class: https://github.com/django/django/blob/main/django/core/files/storage.py
 """
 
-from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.storage import Storage
 from cloudflare_images.service import CloudflareImagesService
+from cloudflare_images.config import Config
 
 
 class CloudflareImagesStorage(Storage):
@@ -99,7 +99,7 @@ class CloudflareImagesStorage(Storage):
         directly by a web browser.
         Has to be implemented.
         """
-        return self.url_with_variant(name, "public")
+        return self.url_with_variant(name, Config().variant)
 
     def url_with_variant(self, name, variant):
         """

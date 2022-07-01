@@ -2,9 +2,9 @@
 Contains the Cloudflare Image service which handles the API exchanges
 """
 
-from django.core.files.base import File
-from django.conf import settings
 import requests
+from django.core.files.base import File
+from cloudflare_images.config import Config
 
 
 class ApiException(Exception):
@@ -22,21 +22,19 @@ class CloudflareImagesService:
 
     def __init__(self):
         """
-        Retrieves django settings
+        Loads the configuration
         """
-        self.account_id = settings.CLOUDFLARE_IMAGES_ACCOUNT_ID
-        self.api_token = settings.CLOUDFLARE_IMAGES_API_TOKEN
-        self.account_hash = settings.CLOUDFLARE_IMAGES_ACCOUNT_HASH
+        self.config = Config()
 
     def upload(self, file):
         """
         Uploads a file and return its name, otherwise raise an exception
         """
         url = "https://api.cloudflare.com/client/v4/accounts/{}/images/v1".format(
-            self.account_id
+            self.config.account_id
         )
 
-        headers = {"Authorization": "Bearer {}".format(self.api_token)}
+        headers = {"Authorization": "Bearer {}".format(self.config.api_token)}
 
         files = {"file": file}
 
@@ -53,21 +51,21 @@ class CloudflareImagesService:
         """
         Returns the public URL for the given image ID
         """
-        if hasattr(settings, "CLOUDFLARE_IMAGES_DOMAIN"):
+        if self.config.domain:
             return "https://{}/cdn-cgi/imagedelivery/{}/{}/{}".format(
-                settings.CLOUDFLARE_IMAGES_DOMAIN, self.account_hash, name, variant
+                self.config.domain, self.config.account_hash, name, variant
             )
 
         return "https://imagedelivery.net/{}/{}/{}".format(
-            self.account_hash, name, variant
+            self.config.account_hash, name, variant
         )
 
-    def open(self, name, variant="public"):
+    def open(self, name, variant=None):
         """
         Retrieves a file and turn it, otherwise raise an exception
         """
 
-        url = self.get_url(name, variant)
+        url = self.get_url(name, variant or self.config.variant)
 
         response = requests.get(url)
 
@@ -83,10 +81,10 @@ class CloudflareImagesService:
         """
 
         url = "https://api.cloudflare.com/client/v4/accounts/{}/images/v1/{}".format(
-            self.account_id, name
+            self.config.account_id, name
         )
 
-        headers = {"Authorization": "Bearer {}".format(self.api_token)}
+        headers = {"Authorization": "Bearer {}".format(self.config.api_token)}
 
         response = requests.delete(url, headers=headers)
 

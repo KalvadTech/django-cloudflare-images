@@ -17,18 +17,6 @@ class CloudflareImageServiceTests(TestCase):
     def setUp(self):
         self.service = CloudflareImagesService()
 
-    def test_account_id(self):
-        account_id = self.service.account_id
-        self.assertEqual(account_id, settings.CLOUDFLARE_IMAGES_ACCOUNT_ID)
-
-    def test_api_token(self):
-        api_token = self.service.api_token
-        self.assertEqual(api_token, settings.CLOUDFLARE_IMAGES_API_TOKEN)
-
-    def test_account_hash(self):
-        account_hash = self.service.account_hash
-        self.assertEqual(account_hash, settings.CLOUDFLARE_IMAGES_ACCOUNT_HASH)
-
     @patch("requests.post")
     def test_failed_upload(self, mock_post):
         mock_post.return_value = get_dummy_api_response(400, '{"errors": "test"}')
