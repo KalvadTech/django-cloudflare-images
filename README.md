@@ -40,7 +40,7 @@ CLOUDFLARE_IMAGES_DOMAIN = "example.com"
 
 ```
 
-If you wish to use a default variant to serve your images you need to add the following to your settings.py:
+If you wish to use a default variant other than "public" to serve your images you need to add the following to your settings.py:
 
 ```python
 CLOUDFLARE_IMAGES_VARIANT = "custom"
