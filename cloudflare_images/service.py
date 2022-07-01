@@ -41,12 +41,12 @@ class CloudflareImagesService:
         files = {"file": file}
 
         response = requests.post(url, headers=headers, files=files)
-        response_body = response.json()
 
         status_code = response.status_code
         if status_code != 200:
-            raise ApiException(str(response_body.get("errors")))
+            raise ApiException(response.content)
 
+        response_body = response.json()
         return response_body.get("result").get("id")
 
     def get_url(self, name, variant):

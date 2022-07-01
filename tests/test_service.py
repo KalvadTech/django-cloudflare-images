@@ -37,6 +37,20 @@ class CloudflareImageServiceTests(TestCase):
         file.close()
 
     @patch("requests.post")
+    def test_502_upload(self, mock_post):
+        """
+        This only ever happened once in production so far.
+        Cloudflare returned a 502 with HTML content during an upload,
+        breaking the service because it was always trying to parse some json.
+        """
+        mock_post.return_value = get_dummy_api_response(
+            502, "<html>Failure</html>", False
+        )
+        file = get_dummy_image()
+        self.assertRaises(ApiException, self.service.upload, file)
+        file.close()
+
+    @patch("requests.post")
     def test_success_upload(self, mock_post):
         mock_post.return_value = get_dummy_api_response(
             200, '{"result": {"id": "test"}}'
