@@ -16,6 +16,10 @@ class CloudflareImageServiceTests(TestCase):
     def setUp(self):
         self.service = CloudflareImagesService()
 
+    def test_has_config(self):
+        config = self.service.config
+        self.assertTrue(config is not None)
+
     @patch("requests.post")
     def test_failed_upload(self, mock_post):
         mock_post.return_value = get_dummy_api_response(400, '{"errors": "test"}')
