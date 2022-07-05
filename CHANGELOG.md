@@ -1,4 +1,14 @@
-# 0.3.1
+# 0.4.0
+
+## Features
+
+ * Added support for global custom variant (to override default "public")
+
+## Bugfix
+
+ * Fixed a rare bug where Cloudflare would return a 502 timeout (HTML page, not JSON) during an upload and the service would explode when trying to parse json
+
+## 0.3.1
 
 # Misc
 
