@@ -3,7 +3,6 @@ Tests related to the CloudflareImagesField
 """
 
 from django.test import TestCase, override_settings
-from django.conf import settings
 from cloudflare_images.field import CloudflareImagesField, CloudflareImagesFieldFile
 
 

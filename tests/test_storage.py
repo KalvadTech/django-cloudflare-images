@@ -2,7 +2,6 @@
 Test related to the CloudflareImagesStorage
 """
 from django.test import TestCase, override_settings
-from django.conf import settings
 from cloudflare_images.storage import CloudflareImagesStorage
 from cloudflare_images.service import ApiException
 from .utils import get_dummy_image, get_dummy_image_name

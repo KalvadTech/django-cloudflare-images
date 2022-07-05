@@ -8,6 +8,7 @@ from django.db.models.fields.files import (
     ImageField,
     ImageFileDescriptor,
 )
+from cloudflare_images.config import Config
 
 
 class CloudflareImagesFileDescriptor(ImageFileDescriptor):
@@ -46,13 +47,13 @@ class CloudflareImagesField(ImageField):
         name=None,
         width_field=None,
         height_field=None,
-        variant="public",
+        variant=None,
         **kwargs,
     ):
         """
         Calling ImageFieldFile constructor and setting our variant
         """
-        self.variant = variant
+        self.variant = variant or Config().variant
         super().__init__(verbose_name, name, width_field, height_field, **kwargs)
 
     def deconstruct(self):

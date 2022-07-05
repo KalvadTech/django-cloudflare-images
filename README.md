@@ -40,6 +40,12 @@ CLOUDFLARE_IMAGES_DOMAIN = "example.com"
 
 ```
 
+If you wish to use a default variant other than "public" to serve your images you need to add the following to your settings.py:
+
+```python
+CLOUDFLARE_IMAGES_VARIANT = "custom"
+```
+
 ## Development
 
 Installing for development:
@@ -74,9 +80,3 @@ make package-build
 make package-install
 make package-sdist
 ```
-
-## TODO
-
-This is a list of non exhaustive list of things I would like to add to the project:
-
- * Support global default variant instead of "public"
