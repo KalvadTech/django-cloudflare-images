@@ -6,10 +6,12 @@ Django's default storage class: https://github.com/django/django/blob/main/djang
 
 from django.core.files.base import ContentFile
 from django.core.files.storage import Storage
+from django.utils.deconstruct import deconstructible
 from cloudflare_images.service import CloudflareImagesService
 from cloudflare_images.config import Config
 
 
+@deconstructible
 class CloudflareImagesStorage(Storage):
     """
     Django storage for Cloudflare Images
