@@ -1,3 +1,9 @@
+## 0.5.0
+
+### Features
+
+ * Added support for the `size` Storage subclass
+
 ## 0.4.1
 
 ### Misc

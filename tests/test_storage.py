@@ -1,6 +1,7 @@
 """
 Test related to the CloudflareImagesStorage
 """
+from unittest.mock import patch
 from django.test import TestCase, override_settings
 from cloudflare_images.storage import CloudflareImagesStorage
 from cloudflare_images.service import ApiException
@@ -28,6 +29,14 @@ class CloudflareImageStorageTests(TestCase):
     def test_open(self):
         name = "image_id"
         self.assertRaises(ApiException, self.storage.open, name)
+
+    @patch("cloudflare_images.service.CloudflareImagesService.open")
+    def test_open_mocked(self, mock_open):
+        mock_open.return_value = "content"
+        name = get_dummy_image_name()
+        fff = self.storage.open(name)
+        self.assertEqual(fff.file, "content")
+        self.assertEqual(fff.name, name)
 
     def test_delete(self):
         name = "image_id"
@@ -79,7 +88,14 @@ class CloudflareImageStorageTests(TestCase):
 
     def test_size(self):
         name = "image_id"
-        self.assertRaises(NotImplementedError, self.storage.size, name)
+        self.assertRaises(ApiException, self.storage.size, name)
+
+    @patch("cloudflare_images.service.CloudflareImagesService.open")
+    def test_size_mocked(self, mock_open):
+        mock_open.return_value = "content"
+        name = get_dummy_image_name()
+        fff = self.storage.size(name)
+        self.assertEqual(fff, 7)
 
     def test_get_accessed_time(self):
         name = "image_id"

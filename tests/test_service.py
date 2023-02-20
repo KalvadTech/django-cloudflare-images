@@ -62,8 +62,7 @@ class CloudflareImageServiceTests(TestCase):
         mock_get.return_value = get_dummy_api_response(200, "content", False)
         name = "image_id"
         result = self.service.open(name)
-        self.assertEqual(result.name, name)
-        self.assertEqual(result.file, "content")
+        self.assertEqual(result, "content")
 
     @patch("requests.delete")
     def test_failed_delete(self, mock_delete):

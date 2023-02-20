@@ -3,7 +3,6 @@ Contains the Cloudflare Image service which handles the API exchanges
 """
 
 import requests
-from django.core.files.base import File
 from cloudflare_images.config import Config
 
 
@@ -62,7 +61,7 @@ class CloudflareImagesService:
 
     def open(self, name, variant=None):
         """
-        Retrieves a file and turn it, otherwise raise an exception
+        Retrieves a file and return its content, otherwise raise an exception
         """
 
         url = self.get_url(name, variant or self.config.variant)
@@ -73,7 +72,7 @@ class CloudflareImagesService:
         if status_code != 200:
             raise ApiException(response.content)
 
-        return File(response.content, name=name)
+        return response.content
 
     def delete(self, name):
         """

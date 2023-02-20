@@ -4,7 +4,7 @@ default Storage (see README.md)
 Django's default storage class: https://github.com/django/django/blob/main/django/core/files/storage.py
 """
 
-from django.core.files.base import ContentFile
+from django.core.files.base import File
 from django.core.files.storage import Storage
 from django.utils.deconstruct import deconstructible
 from cloudflare_images.service import CloudflareImagesService
@@ -32,7 +32,8 @@ class CloudflareImagesStorage(Storage):
         (and it fails without it) but it wont have any impact
         Has to be implemented.
         """
-        return self.service.open(name)
+        content = self.service.open(name)
+        return File(content, name=name)
 
     def _save(self, name, content):
         """
@@ -93,7 +94,8 @@ class CloudflareImagesStorage(Storage):
         """
         Return the total size, in bytes, of the file specified by name.
         """
-        raise NotImplementedError("subclasses of Storage must provide a size() method")
+        content = self.service.open(name)
+        return len(content)
 
     def url(self, name):
         """
