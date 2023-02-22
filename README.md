@@ -72,11 +72,8 @@ Running all tests:
 make test
 ```
 
-Setup.py commands:
+Create a sdist+bdist package in dist/:
 
 ```sh
-make package-develop
-make package-build
-make package-install
-make package-sdist
+make package
 ```
