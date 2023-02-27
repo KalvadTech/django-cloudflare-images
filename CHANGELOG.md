@@ -1,3 +1,9 @@
+## 0.5.1
+
+### Misc
+
+ * Using `pyproject.toml` to standardize builds. It will provide a wheel package by default and therefore get rid of the warning from pip 23.y.z
+
 ## 0.5.0
 
 ### Features
