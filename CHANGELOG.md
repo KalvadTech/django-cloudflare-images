@@ -1,3 +1,9 @@
+## 0.5.2
+
+### Misc
+
+ * Updated tests and documentation for Django 4.2 support (new `STORAGES` setting)
+
 ## 0.5.1
 
 ### Misc

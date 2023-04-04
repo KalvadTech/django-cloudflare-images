@@ -12,8 +12,23 @@ pip install django-cloudflare-images
 
 You need to add the following your settings.py:
 
+
+1. If you are running Django 4.2+:
+
+```python
+STORAGES = {"default": {"BACKEND": "cloudflare_images.storage.CloudflareImagesStorage"}}
+```
+
+2. Else:
+
+
 ```python
 DEFAULT_FILE_STORAGE = "cloudflare_images.storage.CloudflareImagesStorage"
+```
+
+And then add the remaining of the configuration:
+
+```python
 CLOUDFLARE_IMAGES_ACCOUNT_ID = "XXX"
 CLOUDFLARE_IMAGES_API_TOKEN = "YYY"
 CLOUDFLARE_IMAGES_ACCOUNT_HASH = "ZZZ"
