@@ -2,6 +2,12 @@
 
 This is a Django library to add support to Cloudflare Images to the ImageField.
 
+It supports:
+
+ * Django 3
+ * Django 4
+ * Django 5
+
 ## Installation
 
 ```sh

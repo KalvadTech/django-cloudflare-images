@@ -1,3 +1,9 @@
+## 0.5.3
+
+### Misc
+
+ * Updated tests and documentation for Django 5 support
+
 ## 0.5.2
 
 ### Misc
