@@ -87,6 +87,12 @@ Format the code:
 make format
 ```
 
+Check the code (for linting errors):
+
+```sh
+make check
+```
+
 Running all tests:
 
 ```sh

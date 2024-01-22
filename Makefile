@@ -12,7 +12,10 @@ clean:
 	rm -rf dist/
 
 format:
-	. env/bin/activate && black . --extend-exclude=env
+	. env/bin/activate && ruff format
+
+check:
+	. env/bin/activate && ruff check
 
 test:
 	. env/bin/activate && tox
