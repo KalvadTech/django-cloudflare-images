@@ -1,6 +1,7 @@
 """
 Utils for running test
 """
+
 from unittest.mock import MagicMock
 import json
 

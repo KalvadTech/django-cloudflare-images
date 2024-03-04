@@ -1,6 +1,7 @@
 """
 Test related to the CloudflareImagesStorage
 """
+
 from unittest.mock import patch
 from django.test import TestCase, override_settings
 from cloudflare_images.storage import CloudflareImagesStorage
