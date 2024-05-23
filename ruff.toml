@@ -1,0 +1,11 @@
+exclude = [
+    "env"
+]
+
+[lint]
+# Enable bandit rules
+select = ["S"]
+
+# Exclude S105 (hardcoded-password-string) for the tests/ directory
+[lint.per-file-ignores]
+"tests/*" = ["S105"]
