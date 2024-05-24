@@ -58,7 +58,6 @@ If you wish to use a custom domain to serve your images you need to add the foll
 
 ```python
 CLOUDFLARE_IMAGES_DOMAIN = "example.com"
-
 ```
 
 If you wish to use a default variant other than "public" to serve your images you need to add the following to your settings.py:
@@ -67,6 +66,11 @@ If you wish to use a default variant other than "public" to serve your images yo
 CLOUDFLARE_IMAGES_VARIANT = "custom"
 ```
 
+If you wish to override the default timeout of 60 seconds for API requests, you need to add the following to your settings.py:
+
+```python
+CLOUDFLARE_IMAGES_API_TIMEOUT = 120
+```
 ## Development
 
 Installing for development:

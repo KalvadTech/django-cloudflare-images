@@ -43,3 +43,12 @@ class ConfigTests(TestCase):
     def test_custom_variant(self):
         variant = self.config.variant
         self.assertEqual(variant, "custom")
+
+    def test_api_timeout(self):
+        api_timeout = self.config.api_timeout
+        self.assertEqual(api_timeout, 60)
+
+    @override_settings(CLOUDFLARE_IMAGES_API_TIMEOUT=100)
+    def test_custom_api_timeout(self):
+        api_timeout = self.config.api_timeout
+        self.assertEqual(api_timeout, 100)
