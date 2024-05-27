@@ -52,3 +52,14 @@ class Config:
             if hasattr(settings, "CLOUDFLARE_IMAGES_VARIANT")
             else "public"
         )
+
+    @property
+    def api_timeout(self):
+        """
+        Returns the timeout if set, else a default of 60 seconds
+        """
+        return (
+            settings.CLOUDFLARE_IMAGES_API_TIMEOUT
+            if hasattr(settings, "CLOUDFLARE_IMAGES_API_TIMEOUT")
+            else 60
+        )
