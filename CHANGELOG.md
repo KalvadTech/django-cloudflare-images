@@ -1,3 +1,9 @@
+## 0.6.0
+
+### Features
+
+ * Added timeout on Cloudflare's API requests, can be customized through `CLOUDFLARE_IMAGES_API_TIMEOUT`. Thanks to @mschfh
+
 ## 0.5.3
 
 ### Misc
