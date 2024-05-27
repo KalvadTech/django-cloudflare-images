@@ -37,7 +37,9 @@ class CloudflareImagesService:
 
         files = {"file": file}
 
-        response = requests.post(url, headers=headers, timeout=self.config.api_timeout, files=files)
+        response = requests.post(
+            url, headers=headers, timeout=self.config.api_timeout, files=files
+        )
 
         status_code = response.status_code
         if status_code != 200:
@@ -85,7 +87,9 @@ class CloudflareImagesService:
 
         headers = {"Authorization": "Bearer {}".format(self.config.api_token)}
 
-        response = requests.delete(url, timeout=self.config.api_timeout, headers=headers)
+        response = requests.delete(
+            url, timeout=self.config.api_timeout, headers=headers
+        )
 
         status_code = response.status_code
         if status_code != 200:
