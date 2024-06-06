@@ -2,8 +2,8 @@
 Tests related to the Config
 """
 
-from django.test import TestCase, override_settings
 from cloudflare_images.config import Config
+from django.test import TestCase, override_settings
 
 
 class ConfigTests(TestCase):
@@ -52,3 +52,12 @@ class ConfigTests(TestCase):
     def test_custom_api_timeout(self):
         api_timeout = self.config.api_timeout
         self.assertEqual(api_timeout, 100)
+
+    def test_use_filename_as_id(self):
+        use_filename_as_id = self.config.use_filename_as_id
+        self.assertEqual(use_filename_as_id, False)
+
+    @override_settings(CLOUDFLARE_IMAGES_USE_FILENAME_AS_ID=True)
+    def test_use_filename_as_id_enabled(self):
+        use_filename_as_id = self.config.use_filename_as_id
+        self.assertEqual(use_filename_as_id, True)

@@ -37,8 +37,17 @@ class CloudflareImagesService:
 
         files = {"file": file}
 
+        if self.config.use_filename_as_id:
+            data = {"id": file.name}
+        else:
+            data = None
+
         response = requests.post(
-            url, headers=headers, timeout=self.config.api_timeout, files=files
+            url,
+            headers=headers,
+            timeout=self.config.api_timeout,
+            files=files,
+            data=data,
         )
 
         status_code = response.status_code

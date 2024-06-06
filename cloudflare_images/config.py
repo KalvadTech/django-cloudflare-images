@@ -63,3 +63,14 @@ class Config:
             if hasattr(settings, "CLOUDFLARE_IMAGES_API_TIMEOUT")
             else 60
         )
+
+    @property
+    def use_filename_as_id(self):
+        """
+        Returns the setting CLOUDFLARE_IMAGES_USE_FILENAME_AS_ID
+        """
+        return (
+            bool(settings.CLOUDFLARE_IMAGES_USE_FILENAME_AS_ID)
+            if hasattr(settings, "CLOUDFLARE_IMAGES_USE_FILENAME_AS_ID")
+            else False
+        )
