@@ -35,6 +35,9 @@ function setupUploadForm(data, element) {
       var link = element.getElementsByTagName("a")[0];
       link.setAttribute("href", d.result.variants[0]);
       link.innerHTML = d.result.id;
+
+      var input = element.getElementsByTagName("input");
+      link.value = d.result.id; // TODO: This is not updating the image in the DB
     });
   });
 
