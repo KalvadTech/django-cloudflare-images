@@ -2,8 +2,9 @@
   {% if widget.value %}
     <a href="{{widget.value.url}}" target="_blank">{{widget.value}}</a>
   {% endif %}
+  <form></form> <!-- For some reason the first form is being deleted somewhere -->
   <form method="post" enctype="multipart/form-data" action="#">
-    <input type="file" id="{{widget.name}}" name="file" />
+    <input type="file" id="{{widget.name}}" name="file">
     <button>Upload</button>
   </form>
 </div>

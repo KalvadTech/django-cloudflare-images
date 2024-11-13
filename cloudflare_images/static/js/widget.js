@@ -34,8 +34,7 @@ function setupUploadForm(data, element) {
 
       var link = element.getElementsByTagName("a")[0];
       link.setAttribute("href", d.result.variants[0]);
-      link.innerHTML = "Preview link"; // TODO: show the ID
-      form.appendChild(link);
+      link.innerHTML = d.result.id;
     });
   });
 
