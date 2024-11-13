@@ -1,9 +1,3 @@
-
-function getInputName() {
-  // TODO: not hardcode and handle multi
-  return "image"
-}
-
 function getOneTimeUploadUrl() {
   // TODO: The "ext" part
   var url = document.location.origin + "/ext/cloudflare_images/api";
@@ -16,19 +10,12 @@ function getOneTimeUploadUrl() {
   });
 }
 
-function setupUploadForm(data) {
-  var form = document.createElement("form");
-  form.setAttribute("method", "post");
+function setupUploadForm(data, element) {
+  console.log(element);
+  var form = element.getElementsByTagName("form")[0];
   form.setAttribute("action", data.result.uploadURL);
-  form.setAttribute("enctype", "multipart/form-data");
 
-  var input = document.createElement("input");
-  input.setAttribute("type", "file");
-  input.setAttribute("id", getInputName());
-  input.setAttribute("name", "file");
-
-  var submit = document.createElement("button");
-  submit.innerHTML = "Upload";
+  var submit = element.getElementsByTagName("button")[0];
 
   form.addEventListener("submit", function(e) {
     console.log("inside submit");
@@ -45,25 +32,22 @@ function setupUploadForm(data) {
     }).then(function(d) {
       console.log(d);
 
-      // TODO: Instead of creating a link, update the existing one (?)
-      var link = document.createElement("a");
+      var link = element.getElementsByTagName("a")[0];
       link.setAttribute("href", d.result.variants[0]);
-      link.setAttribute("target", "_blank");
-      link.innerHTML = "Preview link";
+      link.innerHTML = "Preview link"; // TODO: show the ID
       form.appendChild(link);
     });
   });
 
-  form.appendChild(input);
-  form.appendChild(submit);
-  
-  //TODO:
-  document.getElementsByClassName("ci-widget")[0].appendChild(form);
 }
 
 window.addEventListener('DOMContentLoaded', function() {
-  // TODO: Check if there are some .ci-widget on the page or not first
-  getOneTimeUploadUrl().then(function(data) {
-    setupUploadForm(data);
-  });
+  var elements = document.getElementsByClassName("ci-widget");
+
+  // TODO: no need to pre-request a one time url every time
+  for (element of elements) {
+    getOneTimeUploadUrl().then(function(data) {
+      setupUploadForm(data, element);
+    });
+  }
 });
