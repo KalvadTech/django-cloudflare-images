@@ -110,7 +110,7 @@ class CloudflareImagesService:
 
         status_code = response.status_code
         if status_code != 200:
-            raise ApiException(response.content)
+            raise ApiException(response.text)
 
         return response.json()
 
@@ -127,6 +127,6 @@ class CloudflareImagesService:
 
         status_code = response.status_code
         if status_code != 200:
-            raise ApiException(response.content)
+            raise ApiException(response.text)
 
         return response.json()

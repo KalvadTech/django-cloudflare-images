@@ -3,10 +3,16 @@ function getOneTimeUploadUrl() {
   var url = document.location.origin + "/ext/cloudflare_images/api";
 
   return fetch(url).then(function(response) {
+    if (!response.ok) {
+      throw new Error("HTTP status:" + response.status);
+    }
+
     return response.json();
   }).then(function(data) {
     console.log(data);
     return data;
+  }).catch(function(err) {
+    console.error("Something went wrong: " + err);
   });
 }
 
