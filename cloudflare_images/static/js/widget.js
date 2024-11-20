@@ -43,6 +43,7 @@ function setupUploadForm(response, element) {
       link.innerHTML = d.result.id;
 
       var input = element.getElementsByTagName("input")[0];
+      input.setAttribute("type", "hidden");
       input.value = d.result.id; // Browser throws an error, we cannot modify a file type
     });
   });

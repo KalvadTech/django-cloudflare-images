@@ -23,3 +23,16 @@ class WidgetAPI(View):
             return JsonResponse(data)
         except ApiException as e:
             return JsonResponse(json.loads(str(e)), status=400)
+
+    def put(self, request):
+        """
+        TODO: save the new image and delete the old one if any
+        Payload should be: model, field, ID, value
+        """
+        return JsonResponse({})
+
+    def post(self, request):
+        """
+        TODO: use service.check_image_status for large(r) uploads
+        """
+        return JsonResponse({})

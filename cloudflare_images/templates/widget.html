@@ -2,6 +2,6 @@
   {% if widget.value %}
     <a href="{{widget.value.url}}" target="_blank">{{widget.value}}</a>
   {% endif %}
-  <input type="file" id="{{widget.name}}" name="file">
+  <input type="file" id="{{widget.name}}" name="{{widget.name}}">
   <button>Upload</button>
 </div>
