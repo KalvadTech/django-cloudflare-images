@@ -10,22 +10,22 @@ function getOneTimeUploadUrl() {
   });
 }
 
-function setupUploadForm(data, element) {
+function setupUploadForm(response, element) {
   console.log(element);
-  var form = element.getElementsByTagName("form")[0];
-  form.setAttribute("action", data.result.uploadURL);
-
   var submit = element.getElementsByTagName("button")[0];
 
-  form.addEventListener("submit", function(e) {
-    console.log("inside submit");
+  submit.addEventListener("click", function(e) {
+    console.log("inside click");
     e.preventDefault();
 
+    // TODO: there's probably a better way to prevent multiple clicks
     submit.style.display = 'none';
 
-    var data = new FormData(e.target);
-    fetch(event.target.action, {
-      method: form.method,
+    var data = new FormData();
+    data.append("file", element.getElementsByTagName("input")[0].files[0]);
+
+    fetch(response.result.uploadURL, {
+      method: "POST",
       body: data
     }).then(function(response) {
       return response.json();
@@ -36,8 +36,8 @@ function setupUploadForm(data, element) {
       link.setAttribute("href", d.result.variants[0]);
       link.innerHTML = d.result.id;
 
-      var input = element.getElementsByTagName("input");
-      link.value = d.result.id; // TODO: This is not updating the image in the DB
+      var input = element.getElementsByTagName("input")[0];
+      input.value = d.result.id; // Browser throws an error, we cannot modify a file type
     });
   });
 
