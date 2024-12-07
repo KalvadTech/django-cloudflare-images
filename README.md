@@ -71,6 +71,12 @@ If you wish to override the default timeout of 60 seconds for API requests, you 
 ```python
 CLOUDFLARE_IMAGES_API_TIMEOUT = 120
 ```
+
+If you wish to access the [original image](https://developers.cloudflare.com/images/manage-images/export-images/) instead of the resized variant via the `file` attribute, you need to add the following to your settings.py:
+
+```python
+CLOUDFLARE_IMAGES_ORIGINAL_IMAGE = True
+```
 ## Development
 
 Installing for development:
