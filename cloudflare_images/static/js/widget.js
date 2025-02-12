@@ -72,7 +72,7 @@ function clickListener(e, element) {
       var link = element.getElementsByTagName("a")[0];
       if (! link) {
         link = document.createElement("a");
-        element.preprend(link);
+        element.append(link);
       }
       link.setAttribute("href", d.result.variants[0]);
       link.innerHTML = d.result.id;
