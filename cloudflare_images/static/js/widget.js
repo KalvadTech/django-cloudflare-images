@@ -20,8 +20,7 @@ function clickListener(e) {
   console.log("inside click");
   e.preventDefault();
 
-  // TODO: there's probably a better way to prevent multiple clicks
-  e.target.style.display = 'none';
+  e.target.disabled = true;
 
   getOneTimeUploadUrl().then(function(response) {
     var data = new FormData();
@@ -40,8 +39,10 @@ function clickListener(e) {
       link.innerHTML = d.result.id;
 
       var input = element.getElementsByTagName("input")[0];
-      input.setAttribute("type", "hidden");
-      input.value = d.result.id; // Browser throws an error, we cannot modify a file type
+
+      // TODO: Call the PUT endpoint
+
+      e.target.disabled = false;
     });
 
   });
