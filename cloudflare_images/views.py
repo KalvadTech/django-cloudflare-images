@@ -31,6 +31,7 @@ class WidgetAPI(View):
     def put(self, request):
         """
         TODO: save the new image and delete the old one if any
+        TODO: But what should we do when its a new model ?
         Payload should be: model, field, ID, value
         """
         data = json.loads(request.body) # TODO: Use a form to validate payload
