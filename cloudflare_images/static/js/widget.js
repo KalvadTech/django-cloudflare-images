@@ -16,17 +16,14 @@ function getOneTimeUploadUrl() {
   });
 }
 
-function setupUploadForm(response, element) {
-  console.log(element);
-  var submit = element.getElementsByTagName("button")[0];
+function clickListener(e) {
+  console.log("inside click");
+  e.preventDefault();
 
-  submit.addEventListener("click", function(e) {
-    console.log("inside click");
-    e.preventDefault();
+  // TODO: there's probably a better way to prevent multiple clicks
+  e.target.style.display = 'none';
 
-    // TODO: there's probably a better way to prevent multiple clicks
-    submit.style.display = 'none';
-
+  getOneTimeUploadUrl().then(function(response) {
     var data = new FormData();
     data.append("file", element.getElementsByTagName("input")[0].files[0]);
 
@@ -46,17 +43,20 @@ function setupUploadForm(response, element) {
       input.setAttribute("type", "hidden");
       input.value = d.result.id; // Browser throws an error, we cannot modify a file type
     });
-  });
 
+  });
+}
+
+function setupUploadForm(element) {
+  console.log(element);
+  var submit = element.getElementsByTagName("button")[0];
+  submit.addEventListener("click", clickListener);
 }
 
 window.addEventListener('DOMContentLoaded', function() {
   var elements = document.getElementsByClassName("ci-widget");
 
-  // TODO: no need to pre-request a one time url every time
   for (element of elements) {
-    getOneTimeUploadUrl().then(function(data) {
-      setupUploadForm(data, element);
-    });
+    setupUploadForm(element);
   }
 });
