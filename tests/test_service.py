@@ -83,6 +83,12 @@ class CloudflareImageServiceTests(TestCase):
         hardcoded_url = "https://imagedelivery.net/account_hash/image_id/public"
         self.assertEqual(url, hardcoded_url)
 
+    def test_get_blob_url(self):
+        name = "image_id"
+        url = self.service.get_blob_url(name)
+        hardcoded_url = "https://api.cloudflare.com/client/v4/accounts/account_id/images/v1/image_id/blob"
+        self.assertEqual(url, hardcoded_url)
+
     @override_settings(CLOUDFLARE_IMAGES_DOMAIN="example.com")
     def test_get_url_with_custom_domain(self):
         name = "image_id"
