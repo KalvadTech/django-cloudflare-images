@@ -61,14 +61,30 @@ class CloudflareImagesService:
             self.config.account_hash, name, variant
         )
 
+    def get_blob_url(self, name):
+        """
+        Returns the public URL for the given image ID
+        """
+        return (
+            "https://api.cloudflare.com/client/v4/accounts/{}/images/v1/{}/blob".format(
+                self.config.account_id, name
+            )
+        )
+
     def open(self, name, variant=None):
         """
         Retrieves a file and return its content, otherwise raise an exception
         """
 
-        url = self.get_url(name, variant or self.config.variant)
-
-        response = requests.get(url, timeout=self.config.api_timeout)
+        if self.config.original_image:
+            url = self.get_blob_url(name)
+            headers = {"Authorization": "Bearer {}".format(self.config.api_token)}
+            response = requests.get(
+                url, timeout=self.config.api_timeout, headers=headers
+            )
+        else:
+            url = self.get_url(name, variant or self.config.variant)
+            response = requests.get(url, timeout=self.config.api_timeout)
 
         status_code = response.status_code
         if status_code != 200:
