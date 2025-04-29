@@ -63,3 +63,14 @@ class Config:
             if hasattr(settings, "CLOUDFLARE_IMAGES_API_TIMEOUT")
             else 60
         )
+
+    @property
+    def original_image(self):
+        """
+        Returns the setting CLOUDFLARE_IMAGES_ORIGINAL_IMAGE
+        """
+        return (
+            bool(settings.CLOUDFLARE_IMAGES_ORIGINAL_IMAGE)
+            if hasattr(settings, "CLOUDFLARE_IMAGES_ORIGINAL_IMAGE")
+            else False
+        )
