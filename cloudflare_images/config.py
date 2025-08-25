@@ -11,28 +11,28 @@ class Config:
     """
 
     @property
-    def account_id(self):
+    def account_id(self) -> str | None:
         """
         Returns the setting CLOUDFLARE_IMAGES_ACCOUNT_ID
         """
         return settings.CLOUDFLARE_IMAGES_ACCOUNT_ID
 
     @property
-    def api_token(self):
+    def api_token(self) -> str | None:
         """
         Returns the setting CLOUDFLARE_IMAGES_API_TOKEN
         """
         return settings.CLOUDFLARE_IMAGES_API_TOKEN
 
     @property
-    def account_hash(self):
+    def account_hash(self) -> str | None:
         """
         Returns the setting CLOUDFLARE_IMAGES_ACCOUNT_HASH
         """
         return settings.CLOUDFLARE_IMAGES_ACCOUNT_HASH
 
     @property
-    def domain(self):
+    def domain(self) -> str | None:
         """
         Returns the setting CLOUDFLARE_IMAGES_DOMAIN if available
         """
@@ -43,7 +43,7 @@ class Config:
         )
 
     @property
-    def variant(self):
+    def variant(self) -> str:
         """
         Returns the default variant
         """
@@ -54,7 +54,7 @@ class Config:
         )
 
     @property
-    def api_timeout(self):
+    def api_timeout(self) -> int:
         """
         Returns the timeout if set, else a default of 60 seconds
         """

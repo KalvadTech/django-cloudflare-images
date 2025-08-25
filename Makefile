@@ -17,6 +17,9 @@ format:
 check:
 	. env/bin/activate && ruff check
 
+static-check:
+	. env/bin/activate && ty check
+
 test:
 	. env/bin/activate && tox
 
