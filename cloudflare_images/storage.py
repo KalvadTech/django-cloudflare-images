@@ -25,7 +25,7 @@ class CloudflareImagesStorage(Storage):
 
         self.service = CloudflareImagesService()
 
-    def _open(self, name: str, mode:str = "rb") -> File:
+    def _open(self, name: str, mode: str = "rb") -> File:
         """
         Returns the image as a File
         The parameter "mode" has been kept to respect the original signature
