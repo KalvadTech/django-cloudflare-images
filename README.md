@@ -1,5 +1,7 @@
 # django-cloudflare-images
 
+![coverage](./coverage.svg)
+
 This is a Django library to add support to Cloudflare Images to the ImageField.
 
 It supports:
