@@ -71,6 +71,12 @@ If you wish to override the default timeout of 60 seconds for API requests, you 
 ```python
 CLOUDFLARE_IMAGES_API_TIMEOUT = 120
 ```
+
+If you wish to use the filename as [custom ID path](https://developers.cloudflare.com/images/upload-images/upload-custom-path/), you need to add the following to your settings.py:
+
+```python
+CLOUDFLARE_IMAGES_USE_FILENAME_AS_ID = True
+```
 ## Development
 
 Installing for development:
