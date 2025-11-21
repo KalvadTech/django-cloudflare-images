@@ -97,6 +97,12 @@ Check the code (for linting errors):
 make check
 ```
 
+Check the code (python type checker):
+
+```sh
+make static-check
+```
+
 Running all tests:
 
 ```sh

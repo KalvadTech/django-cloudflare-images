@@ -25,7 +25,7 @@ class CloudflareImagesStorage(Storage):
 
         self.service = CloudflareImagesService()
 
-    def _open(self, name, mode="rb"):
+    def _open(self, name: str, mode: str = "rb") -> File:
         """
         Returns the image as a File
         The parameter "mode" has been kept to respect the original signature
@@ -35,7 +35,7 @@ class CloudflareImagesStorage(Storage):
         content = self.service.open(name)
         return File(content, name=name)
 
-    def _save(self, name, content):
+    def _save(self, name: str, content: File) -> str:
         """
         Tries to upload the file and return its name
         Has to be implemented.
@@ -44,35 +44,35 @@ class CloudflareImagesStorage(Storage):
         content.name = new_name
         return self.service.upload(content)
 
-    def get_valid_name(self, name):
+    def get_valid_name(self, name: str) -> str:
         """
         Returns a valid name for the file.
         Has to be implemented.
         """
         return name
 
-    def get_available_name(self, name, max_length=None):
+    def get_available_name(self, name: str, max_length: str | None = None) -> str:
         """
         Returns the available name for the file.
         Has to be implemented.
         """
         return self.generate_filename(name)
 
-    def generate_filename(self, filename):
+    def generate_filename(self, filename: str) -> str:
         """
         Returns the name of the file.
         Has to be implemented.
         """
         return filename
 
-    def delete(self, name):
+    def delete(self, name: str) -> None:
         """
         Tries to delete the specified file from the storage system.
         Has to be implemented.
         """
         self.service.delete(name)
 
-    def exists(self, name):
+    def exists(self, name: str) -> None:
         """
         Return True if a file referenced by the given name already exists in the
         storage system, or False if the name is available for a new file.
@@ -81,7 +81,7 @@ class CloudflareImagesStorage(Storage):
             "subclasses of Storage must provide an exists() method"
         )
 
-    def listdir(self, path):
+    def listdir(self, path: str) -> None:
         """
         List the contents of the specified path. Return a 2-tuple of lists:
         the first item being directories, the second item being files.
@@ -90,14 +90,14 @@ class CloudflareImagesStorage(Storage):
             "subclasses of Storage must provide a listdir() method"
         )
 
-    def size(self, name):
+    def size(self, name: str) -> int:
         """
         Return the total size, in bytes, of the file specified by name.
         """
         content = self.service.open(name)
         return len(content)
 
-    def url(self, name):
+    def url(self, name: str) -> str:
         """
         Return an absolute URL where the file's contents can be accessed
         directly by a web browser.
@@ -105,13 +105,13 @@ class CloudflareImagesStorage(Storage):
         """
         return self.url_with_variant(name, Config().variant)
 
-    def url_with_variant(self, name, variant):
+    def url_with_variant(self, name: str, variant: str) -> str:
         """
         Custom methods which allow to pass a variant and respect the original signature of `url`
         """
         return self.service.get_url(name, variant)
 
-    def get_accessed_time(self, name):
+    def get_accessed_time(self, name: str) -> None:
         """
         Return the last accessed time (as a datetime) of the file specified by
         name. The datetime will be timezone-aware if USE_TZ=True.
@@ -120,7 +120,7 @@ class CloudflareImagesStorage(Storage):
             "subclasses of Storage must provide a get_accessed_time() method"
         )
 
-    def get_created_time(self, name):
+    def get_created_time(self, name: str) -> None:
         """
         Return the creation time (as a datetime) of the file specified by name.
         The datetime will be timezone-aware if USE_TZ=True.
@@ -129,7 +129,7 @@ class CloudflareImagesStorage(Storage):
             "subclasses of Storage must provide a get_created_time() method"
         )
 
-    def get_modified_time(self, name):
+    def get_modified_time(self, name: str) -> None:
         """
         Return the last modified time (as a datetime) of the file specified by
         name. The datetime will be timezone-aware if USE_TZ=True.

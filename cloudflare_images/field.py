@@ -27,7 +27,7 @@ class CloudflareImagesFieldFile(ImageFieldFile):
     """
 
     @property
-    def url(self):
+    def url(self) -> str:
         """
         Overriding the default url method to pass our variant
         """
@@ -45,11 +45,11 @@ class CloudflareImagesField(ImageField):
 
     def __init__(
         self,
-        verbose_name=None,
-        name=None,
-        width_field=None,
-        height_field=None,
-        variant=None,
+        verbose_name: str | None = None,
+        name: str | None = None,
+        width_field: str | None = None,
+        height_field: str | None = None,
+        variant: str | None = None,
         **kwargs,
     ):
         """

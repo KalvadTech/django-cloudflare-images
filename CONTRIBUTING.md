@@ -6,6 +6,8 @@ To contribute to django-cloudflare-images you simply need to do the following:
  * Run `make install`
  * Do your changes and add some tests
  * Run `make format`
+ * Run `make check`
+ * Run `make static-check`
  * Run `make test`
  * Submit your PR :)
 

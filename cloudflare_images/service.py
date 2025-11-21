@@ -3,6 +3,7 @@ Contains the Cloudflare Image service which handles the API exchanges
 """
 
 import requests
+from typing import TextIO
 from cloudflare_images.config import Config
 
 
@@ -25,7 +26,7 @@ class CloudflareImagesService:
         """
         self.config = Config()
 
-    def upload(self, file):
+    def upload(self, file: TextIO) -> str:
         """
         Uploads a file and return its name, otherwise raise an exception
         """
@@ -48,7 +49,7 @@ class CloudflareImagesService:
         response_body = response.json()
         return response_body.get("result").get("id")
 
-    def get_url(self, name, variant):
+    def get_url(self, name: str, variant: str) -> str:
         """
         Returns the public URL for the given image ID
         """
@@ -61,7 +62,7 @@ class CloudflareImagesService:
             self.config.account_hash, name, variant
         )
 
-    def open(self, name, variant=None):
+    def open(self, name: str, variant: str | None = None) -> str:
         """
         Retrieves a file and return its content, otherwise raise an exception
         """
@@ -76,7 +77,7 @@ class CloudflareImagesService:
 
         return response.content
 
-    def delete(self, name):
+    def delete(self, name: str) -> None:
         """
         Deletes a file if it exists, otherwise raise an exception
         """
