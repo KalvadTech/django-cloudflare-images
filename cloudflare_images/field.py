@@ -4,6 +4,7 @@ such as variants in Cloudflare Images
 """
 
 from django import forms
+from django.db.models import CharField
 from django.db.models.fields.files import (
     ImageFieldFile,
     ImageField,
@@ -70,3 +71,18 @@ class CloudflareImagesField(ImageField):
 
 class CloudflareImagesUploadField(forms.CharField):
     widget = CloudflareImagesWidget
+
+
+class CloudflareImageIDField(CharField):
+    """
+    Stores a Cloudflare Image ID (for direct uploads)"
+    """
+
+    def __init__(self, *args, variant=None, **kwargs):
+        self.variant = variant
+        super().__init__(*args, **kwargs)
+
+    def formfield(self, **kwargs):
+        defaults = {"widget": CloudflareImagesWidget()}
+        defaults.update(kwargs)
+        return super().formfield(**defaults)

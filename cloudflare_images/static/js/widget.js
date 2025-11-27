@@ -59,6 +59,7 @@ function setupUploadForm(element) {
 }
 
 window.addEventListener('DOMContentLoaded', function() {
+  console.log("we are here");
   var elements = document.getElementsByClassName("ci-widget");
 
   for (element of elements) {
