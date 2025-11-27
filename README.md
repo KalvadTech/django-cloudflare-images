@@ -102,7 +102,7 @@ You can override the endpoint to use like so:
 CLOUDFLARE_IMAGES_UPLOAD_ENDPOINT="/my/endpoint/api"
 ```
 
-Please refer to this file for the base implementation details: cloudflare_images/views.py
+Please refer to [this file](https://github.com/KalvadTech/django-cloudflare-images/blob/468fd55f59a9edac4ecd2b25c361308994b60ef6/cloudflare_images/views.py) for the base implementation details
 
 Modify/Add to your model:
 
