@@ -3,13 +3,13 @@ Custom widget for Direct Creator Uploads
 """
 
 from typing import Any, Dict
-from django.forms import ClearableFileInput
+from django.forms.widgets import Widget
 from django.utils.datastructures import MultiValueDict
 from cloudflare_images.service import CloudflareImagesService
 from cloudflare_images.config import Config
 
 
-class CloudflareImagesWidget(ClearableFileInput):
+class CloudflareImagesWidget(Widget):
     """
     Widget
     """
