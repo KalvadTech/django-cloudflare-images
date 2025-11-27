@@ -9,7 +9,6 @@ function getOneTimeUploadUrl() {
 
     return response.json();
   }).then(function(data) {
-    console.log(data);
     return data;
   }).catch(function(err) {
     console.error("Something went wrong: " + err);
@@ -17,7 +16,6 @@ function getOneTimeUploadUrl() {
 }
 
 function clickListener(e, element) {
-  console.log("inside click");
   e.preventDefault();
 
   e.target.disabled = true;
@@ -32,8 +30,6 @@ function clickListener(e, element) {
     }).then(function(response) {
       return response.json();
     }).then(function(d) {
-      console.log(d);
-
       var link = element.getElementsByTagName("a")[0];
       if (! link) {
         link = document.createElement("a");
@@ -53,13 +49,11 @@ function clickListener(e, element) {
 }
 
 function setupUploadForm(element) {
-  console.log(element);
   var submit = element.getElementsByTagName("button")[0];
   submit.addEventListener("click", function(e) { clickListener(e, element)});
 }
 
 window.addEventListener('DOMContentLoaded', function() {
-  console.log("we are here");
   var elements = document.getElementsByClassName("ci-widget");
 
   for (element of elements) {
