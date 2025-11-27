@@ -114,20 +114,3 @@ class CloudflareImagesService:
             raise ApiException(response.text)
 
         return response.json()
-
-    def check_image_status(self, image_id: str) -> Dict[str, Any]:
-        """
-        Direct Creator Upload endpoint
-        Checks the status of a new draft image record
-        """
-        url = "https://api.cloudflare.com/client/v4/accounts/{}/images/v1/{}".format(
-            self.config.account_id, image_id
-        )
-
-        response = requests.get(url, timeout=self.config.api_timeout)
-
-        status_code = response.status_code
-        if status_code != 200:
-            raise ApiException(response.text)
-
-        return response.json()
