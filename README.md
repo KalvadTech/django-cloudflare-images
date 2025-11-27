@@ -71,6 +71,59 @@ If you wish to override the default timeout of 60 seconds for API requests, you 
 ```python
 CLOUDFLARE_IMAGES_API_TIMEOUT = 120
 ```
+
+## Direct Creator Upload
+
+If you want to leverage Cloudflare's Direct Creator Upload (client side upload, similar to S3/Minio presigned URL concept), you need to do the following:
+
+Modify your settings:
+
+```python
+INSTALLED_APPS = [
+    "cloudflare_images",
+]
+```
+
+Modify your urls:
+
+```python
+from cloudflare_images.views import WidgetAPI
+
+# And add inside your router:
+path("ext/cloudflare_images/api", WidgetAPI.as_view(), name="widget-api"),
+
+```
+
+**Please note that it is much safer to implement your own endpoint to retrieve the one time URL from cloudflare**
+
+You can override the endpoint to use like so:
+
+```python
+CLOUDFLARE_IMAGES_UPLOAD_ENDPOINT="/my/endpoint/api"
+```
+
+Please refer to this file for the base implementation details: cloudflare_images/views.py
+
+Modify/Add to your model:
+
+```python
+from cloudflare_images.field import CloudflareImageIDField
+
+# in your model:
+image = CloudflareImageIDField(variant="test")
+```
+
+If you are changing from a `CloudflareImagesField`, please note that you need to generate a migration (`python manage.py makemigrations`) and that this new field is **not backward compatible** in particular to access the `.url` field.
+
+Modify your HTML template using a django form to load the JS/CSS:
+
+```html
+{{ form.media.js }}
+{{ form.media.css }}
+```
+
+And you should be good to go. For basic troubleshooting, check your browser's console for hints or open a ticket.
+
 ## Development
 
 Installing for development:
