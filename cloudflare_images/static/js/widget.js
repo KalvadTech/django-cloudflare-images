@@ -1,6 +1,5 @@
-function getOneTimeUploadUrl() {
-  // TODO: The "ext" part
-  var url = document.location.origin + "/ext/cloudflare_images/api";
+function getOneTimeUploadUrl(upload_endpoint) {
+  var url = document.location.origin + upload_endpoint;
 
   return fetch(url).then(function(response) {
     if (!response.ok) {
@@ -20,7 +19,7 @@ function clickListener(e, element) {
 
   e.target.disabled = true;
 
-  getOneTimeUploadUrl().then(function(response) {
+  getOneTimeUploadUrl(element.dataset.uploadEndpoint).then(function(response) {
     var data = new FormData();
     data.append("file", element.querySelectorAll("input[type='file']")[0].files[0]);
 
