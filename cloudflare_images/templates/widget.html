@@ -1,6 +1,6 @@
 <div class="ci-widget">
   {% if widget.value %}
-     <p>I am here</p>
+  <div><a href="{{ widget.url }}" target="_blank">Current image</a></div>
   {% endif %}
   <input type="file" id="{{widget.name}}-file">
   <input type="hidden" id="{{widget.name}}" name="{{widget.name}}" value="{{ widget.value|default_if_none:'' }}">
