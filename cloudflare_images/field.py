@@ -74,11 +74,17 @@ class CloudflareImageIDField(CharField):
     Stores a Cloudflare Image ID (for direct uploads)"
     """
 
-    def __init__(self, *args, variant=None, **kwargs):
-        self.variant = variant
+    def __init__(self, *args, variant: str | None = None, **kwargs):
+        """
+        Calling CharField constructor and setting our variant
+        """
+        self.variant = variant or Config().variant
         super().__init__(*args, **kwargs)
 
     def formfield(self, **kwargs):
+        """
+        Will set the custom uploader widget by default (no need to everytime change widgets{} in your forms)
+        """
         defaults = {"widget": CloudflareImagesWidget()}
         defaults.update(kwargs)
         return super().formfield(**defaults)
