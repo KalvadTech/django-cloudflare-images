@@ -1,3 +1,9 @@
+## 1.0.0
+
+### Features
+
+ * Added a `CloudflareImageIDField` which allows you to upload files on the client side thanks to Cloudflare's Direct Creator Upload feature
+
 ## 0.6.0
 
 ### Features

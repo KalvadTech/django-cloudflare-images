@@ -92,3 +92,14 @@ class CloudflareImageServiceTests(TestCase):
             "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/public"
         )
         self.assertEqual(url, hardcoded_url)
+
+    @patch("requests.post")
+    def test_failed_get_one_time_upload_url(self, mock_post):
+        mock_post.return_value = get_dummy_api_response(400, "", False)
+        self.assertRaises(ApiException, self.service.get_one_time_upload_url)
+
+    @patch("requests.post")
+    def test_success_get_one_time_upload_url(self, mock_post):
+        mock_post.return_value = get_dummy_api_response(200, "{}")
+        result = self.service.get_one_time_upload_url()
+        self.assertEqual(result, {})

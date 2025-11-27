@@ -52,3 +52,12 @@ class ConfigTests(TestCase):
     def test_custom_api_timeout(self):
         api_timeout = self.config.api_timeout
         self.assertEqual(api_timeout, 100)
+
+    def test_upload_endpoint(self):
+        endpoint = self.config.upload_endpoint
+        self.assertEqual(endpoint, "/ext/cloudflare_images/api")
+
+    @override_settings(CLOUDFLARE_IMAGES_UPLOAD_ENDPOINT="/test/api")
+    def test_custom_upload_endpoint(self):
+        endpoint = self.config.upload_endpoint
+        self.assertEqual(endpoint, "/test/api")

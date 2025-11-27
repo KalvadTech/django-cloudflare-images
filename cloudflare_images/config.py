@@ -63,3 +63,16 @@ class Config:
             if hasattr(settings, "CLOUDFLARE_IMAGES_API_TIMEOUT")
             else 60
         )
+
+    @property
+    def upload_endpoint(self) -> str:
+        """
+        Returns the endpoint used to retrieve the upload URL from cloudflare
+        This library provides a default one which has NO SECURITY,
+        is it therefore highly recommended to implement your own.
+        """
+        return (
+            settings.CLOUDFLARE_IMAGES_UPLOAD_ENDPOINT
+            if hasattr(settings, "CLOUDFLARE_IMAGES_UPLOAD_ENDPOINT")
+            else "/ext/cloudflare_images/api"
+        )

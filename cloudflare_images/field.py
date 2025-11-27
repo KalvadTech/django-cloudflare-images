@@ -3,12 +3,15 @@ Contains all the fields related classes to support custom features
 such as variants in Cloudflare Images
 """
 
+from django import forms
+from django.db.models import CharField
 from django.db.models.fields.files import (
     ImageFieldFile,
     ImageField,
     ImageFileDescriptor,
 )
 from cloudflare_images.config import Config
+from cloudflare_images.widget import CloudflareImagesWidget
 
 
 class CloudflareImagesFileDescriptor(ImageFileDescriptor):
@@ -64,3 +67,24 @@ class CloudflareImagesField(ImageField):
         name, path, args, kwargs = super().deconstruct()
         kwargs["variant"] = self.variant
         return name, path, args, kwargs
+
+
+class CloudflareImageIDField(CharField):
+    """
+    Stores a Cloudflare Image ID (for direct uploads)"
+    """
+
+    def __init__(self, *args, variant: str | None = None, **kwargs):
+        """
+        Calling CharField constructor and setting our variant
+        """
+        self.variant = variant or Config().variant
+        super().__init__(*args, **kwargs)
+
+    def formfield(self, **kwargs):
+        """
+        Will set the custom uploader widget by default (no need to everytime change widgets{} in your forms)
+        """
+        defaults = {"widget": CloudflareImagesWidget()}
+        defaults.update(kwargs)
+        return super().formfield(**defaults)

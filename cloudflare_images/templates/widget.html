@@ -1,0 +1,8 @@
+<div class="ci-widget" data-upload-endpoint="{{widget.upload_endpoint}}">
+  {% if widget.value %}
+  <div><a href="{{ widget.url }}" target="_blank">Current image</a></div>
+  {% endif %}
+  <input type="file" id="{{widget.name}}-file">
+  <input type="hidden" id="{{widget.name}}" name="{{widget.name}}" value="{{ widget.value|default_if_none:'' }}">
+  <button>Upload</button>
+</div>

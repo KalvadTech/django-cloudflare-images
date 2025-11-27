@@ -3,7 +3,7 @@ Contains the Cloudflare Image service which handles the API exchanges
 """
 
 import requests
-from typing import TextIO
+from typing import Any, Dict, TextIO
 from cloudflare_images.config import Config
 
 
@@ -95,3 +95,22 @@ class CloudflareImagesService:
         status_code = response.status_code
         if status_code != 200:
             raise ApiException(str(response.text))
+
+    def get_one_time_upload_url(self) -> Dict[str, Any]:
+        """
+        Direct Creator Upload endpoint
+        Generates a one time upload URL
+        """
+        url = "https://api.cloudflare.com/client/v4/accounts/{}/images/v2/direct_upload".format(
+            self.config.account_id
+        )
+
+        headers = {"Authorization": "Bearer {}".format(self.config.api_token)}
+
+        response = requests.post(url, headers=headers, timeout=self.config.api_timeout)
+
+        status_code = response.status_code
+        if status_code != 200:
+            raise ApiException(response.text)
+
+        return response.json()
