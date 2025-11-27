@@ -113,7 +113,18 @@ from cloudflare_images.field import CloudflareImageIDField
 image = CloudflareImageIDField(variant="test")
 ```
 
-If you are changing from a `CloudflareImagesField`, please note that you need to generate a migration (`python manage.py makemigrations`) and that this new field is **not backward compatible** in particular to access the `.url` field.
+If you are changing from a `CloudflareImagesField`, please note that you need to generate a migration (`python manage.py makemigrations`) and that this new field is **not backward compatible** in particular to access the `.url` field. To access your field's URL it is recommended to write a helper (or use a custom mixin) in your model like so:
+
+```python
+from cloudflare_images.service import CloudflareImagesService
+
+    @property
+    def image_url(self) -> str | None:
+        if not self.image:
+            return None
+        service = CloudflareImagesService()
+        return service.get_url(self.image, "public") # or any variant that you want
+```
 
 Modify your HTML template using a django form to load the JS/CSS:
 
