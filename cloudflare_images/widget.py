@@ -2,7 +2,9 @@
 Custom widget for Direct Creator Uploads
 """
 
+from typing import Any, Dict
 from django.forms import ClearableFileInput
+from django.utils.datastructures import MultiValueDict
 from cloudflare_images.service import CloudflareImagesService
 from cloudflare_images.config import Config
 
@@ -14,10 +16,14 @@ class CloudflareImagesWidget(ClearableFileInput):
 
     template_name = "widget.html"
 
-    def value_from_datadict(self, data, files, name):
+    def value_from_datadict(
+        self, data: MultiValueDict[str, Any], files: MultiValueDict[str, Any], name: str
+    ) -> str | None:
         return data.get(name)
 
-    def get_context(self, name, value, attrs):
+    def get_context(
+        self, name: str, value: str | None, attrs: Dict[str, Any]
+    ) -> Dict[str, Any]:
         context = super().get_context(name, value, attrs)
         service = CloudflareImagesService()
         config = Config()
