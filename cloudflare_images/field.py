@@ -69,10 +69,6 @@ class CloudflareImagesField(ImageField):
         return name, path, args, kwargs
 
 
-class CloudflareImagesUploadField(forms.CharField):
-    widget = CloudflareImagesWidget
-
-
 class CloudflareImageIDField(CharField):
     """
     Stores a Cloudflare Image ID (for direct uploads)"
