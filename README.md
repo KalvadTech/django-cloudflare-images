@@ -7,6 +7,7 @@ It supports:
  * Django 3
  * Django 4
  * Django 5
+ * Django 6
 
 ## Installation
 
