@@ -3,7 +3,8 @@ Contains the Cloudflare Image service which handles the API exchanges
 """
 
 import requests
-from typing import Any, Dict, TextIO
+from django.core.files.base import File
+from typing import Any, Dict
 from cloudflare_images.config import Config
 
 
@@ -26,7 +27,7 @@ class CloudflareImagesService:
         """
         self.config = Config()
 
-    def upload(self, file: TextIO) -> str:
+    def upload(self, file: File) -> str:
         """
         Uploads a file and return its name, otherwise raise an exception
         """

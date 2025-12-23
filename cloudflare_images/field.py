@@ -81,7 +81,12 @@ class CloudflareImageIDField(CharField):
         self.variant = variant or Config().variant
         super().__init__(*args, **kwargs)
 
-    def formfield(self, **kwargs):
+    def formfield(
+        self,
+        form_class: forms.Field | None = None,
+        choices_form_class: forms.ChoiceField | None = None,
+        **kwargs,
+    ) -> forms.Field | None:
         """
         Will set the custom uploader widget by default (no need to everytime change widgets{} in your forms)
         """
