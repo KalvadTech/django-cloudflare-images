@@ -21,7 +21,7 @@ class CloudflareImagesService:
     API client for Cloudflare Images
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Loads the configuration
         """

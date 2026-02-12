@@ -17,7 +17,7 @@ class CloudflareImagesStorage(Storage):
     Django storage for Cloudflare Images
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Setups the storage
         """
