@@ -12,3 +12,5 @@ STORAGES = {"default": {"BACKEND": "cloudflare_images.storage.CloudflareImagesSt
 CLOUDFLARE_IMAGES_ACCOUNT_ID = "account_id"
 CLOUDFLARE_IMAGES_API_TOKEN = "api_token"
 CLOUDFLARE_IMAGES_ACCOUNT_HASH = "account_hash"
+
+ROOT_URLCONF = "cloudflare_images.urls"

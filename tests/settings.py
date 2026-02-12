@@ -12,3 +12,5 @@ DEFAULT_FILE_STORAGE = "cloudflare_images.storage.CloudflareImagesStorage"
 CLOUDFLARE_IMAGES_ACCOUNT_ID = "account_id"
 CLOUDFLARE_IMAGES_API_TOKEN = "api_token"
 CLOUDFLARE_IMAGES_ACCOUNT_HASH = "account_hash"
+
+ROOT_URLCONF = "cloudflare_images.urls"
