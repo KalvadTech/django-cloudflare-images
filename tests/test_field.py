@@ -3,7 +3,13 @@ Tests related to the CloudflareImagesField
 """
 
 from django.test import TestCase, override_settings
-from cloudflare_images.field import CloudflareImagesField, CloudflareImagesFieldFile
+from django import forms
+from cloudflare_images.widget import CloudflareImagesWidget
+from cloudflare_images.field import (
+    CloudflareImagesField,
+    CloudflareImagesFieldFile,
+    CloudflareImageIDField,
+)
 
 
 class CloudflareImageFieldTests(TestCase):
@@ -70,3 +76,28 @@ class CloudflareImageFieldFileTests(TestCase):
             "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/custom"
         )
         self.assertEqual(url, hardcoded_url)
+
+
+class CloudflareImageIDTests(TestCase):
+    """
+    Test case for the CloudflareImageIDField
+    """
+
+    def test_default_variant(self):
+        field = CloudflareImageIDField()
+        variant = field.variant
+        self.assertEqual(variant, "public")
+
+    def test_custom_variant(self):
+        field = CloudflareImageIDField(variant="custom")
+        variant = field.variant
+        self.assertEqual(variant, "custom")
+
+    def test_formfield(self):
+        field = CloudflareImageIDField(variant="custom")
+        form_field = field.formfield()
+        self.assertIsInstance(form_field, forms.CharField)
+
+        # This line is here to satisfy `ty` as formfield returns either a forms.Field or None
+        if form_field is not None:
+            self.assertIsInstance(form_field.widget, CloudflareImagesWidget)
