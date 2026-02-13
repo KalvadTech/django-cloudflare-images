@@ -63,7 +63,7 @@ class CloudflareImagesService:
             self.config.account_hash, name, variant
         )
 
-    def open(self, name: str, variant: str | None = None) -> str:
+    def open(self, name: str, variant: str | None = None) -> bytes:
         """
         Retrieves a file and return its content, otherwise raise an exception
         """

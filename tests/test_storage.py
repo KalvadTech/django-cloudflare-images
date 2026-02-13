@@ -21,25 +21,31 @@ class CloudflareImageStorageTests(TestCase):
         service = self.storage.service
         self.assertTrue(service is not None)
 
-    def test_save(self):
+    @patch("cloudflare_images.service.CloudflareImagesService.upload")
+    def test_save(self, mock_upload):
+        mock_upload.side_effect = ApiException("Upload failed")
         name = get_dummy_image_name()
         content = get_dummy_image()
         self.assertRaises(ApiException, self.storage.save, name, content)
         content.close()
 
-    def test_open(self):
+    @patch("cloudflare_images.service.CloudflareImagesService.open")
+    def test_open(self, mock_open):
+        mock_open.side_effect = ApiException("Open failed")
         name = "image_id"
         self.assertRaises(ApiException, self.storage.open, name)
 
     @patch("cloudflare_images.service.CloudflareImagesService.open")
     def test_open_mocked(self, mock_open):
-        mock_open.return_value = "content"
+        mock_open.return_value = b"content"
         name = get_dummy_image_name()
         fff = self.storage.open(name)
-        self.assertEqual(fff.file, "content")
+        self.assertEqual(fff.file, b"content")
         self.assertEqual(fff.name, name)
 
-    def test_delete(self):
+    @patch("cloudflare_images.service.CloudflareImagesService.delete")
+    def test_delete(self, mock_delete):
+        mock_delete.side_effect = ApiException("Delete failed")
         name = "image_id"
         self.assertRaises(ApiException, self.storage.delete, name)
 
@@ -87,13 +93,15 @@ class CloudflareImageStorageTests(TestCase):
         path = "/my/path"
         self.assertRaises(NotImplementedError, self.storage.listdir, path)
 
-    def test_size(self):
+    @patch("cloudflare_images.service.CloudflareImagesService.open")
+    def test_size(self, mock_open):
+        mock_open.side_effect = ApiException("Open failed")
         name = "image_id"
         self.assertRaises(ApiException, self.storage.size, name)
 
     @patch("cloudflare_images.service.CloudflareImagesService.open")
     def test_size_mocked(self, mock_open):
-        mock_open.return_value = "content"
+        mock_open.return_value = b"content"
         name = get_dummy_image_name()
         fff = self.storage.size(name)
         self.assertEqual(fff, 7)
