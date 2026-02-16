@@ -1,2 +1,0 @@
-recursive-include cloudflare_images/templates *
-recursive-include cloudflare_images/static *
