@@ -40,7 +40,7 @@ dev = [
     "build==1.5.0",
     "ruff==0.15.12",
     "tox==4.53.1",
-    "ty==0.0.34",
+    "ty==0.0.35",
 ]
 
 [tool.setuptools.packages.find]
