@@ -69,7 +69,7 @@ class Config:
         """
         Returns the endpoint used to retrieve the upload URL from cloudflare
         This library provides a default one which has NO SECURITY,
-        is it therefore highly recommended to implement your own.
+        it is therefore highly recommended to implement your own.
         """
         return (
             settings.CLOUDFLARE_IMAGES_UPLOAD_ENDPOINT
