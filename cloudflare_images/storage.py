@@ -19,7 +19,7 @@ class CloudflareImagesStorage(Storage):
 
     def __init__(self) -> None:
         """
-        Setups the storage
+        Sets up the storage
         """
         super().__init__()
 
@@ -29,7 +29,7 @@ class CloudflareImagesStorage(Storage):
         """
         Returns the image as a File
         The parameter "mode" has been kept to respect the original signature
-        (and it fails without it) but it wont have any impact
+        (and it fails without it) but it won't have any impact
         Has to be implemented.
         """
         content = self.service.open(name)

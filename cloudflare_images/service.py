@@ -29,7 +29,7 @@ class CloudflareImagesService:
 
     def upload(self, file: File) -> str:
         """
-        Uploads a file and return its name, otherwise raise an exception
+        Uploads a file and returns its name, otherwise raises an exception
         """
         url = "https://api.cloudflare.com/client/v4/accounts/{}/images/v1".format(
             self.config.account_id
@@ -65,7 +65,7 @@ class CloudflareImagesService:
 
     def open(self, name: str, variant: str | None = None) -> bytes:
         """
-        Retrieves a file and return its content, otherwise raise an exception
+        Retrieves a file and returns its content, otherwise raises an exception
         """
 
         url = self.get_url(name, variant or self.config.variant)
