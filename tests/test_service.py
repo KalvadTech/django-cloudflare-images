@@ -3,9 +3,12 @@ Tests related to the CloudflareImagesService
 """
 
 from unittest.mock import patch
+
 from django.test import TestCase, override_settings
-from cloudflare_images.service import CloudflareImagesService, ApiException
-from .utils import get_dummy_image, get_dummy_api_response
+
+from cloudflare_images.service import ApiException, CloudflareImagesService
+
+from .utils import get_dummy_api_response, get_dummy_image
 
 
 class CloudflareImageServiceTests(TestCase):
@@ -24,7 +27,11 @@ class CloudflareImageServiceTests(TestCase):
     def test_failed_upload(self, mock_post):
         mock_post.return_value = get_dummy_api_response(400, '{"errors": "test"}')
         file = get_dummy_image()
-        self.assertRaises(ApiException, self.service.upload, file)
+        try:
+            self.service.upload(file)
+            self.fail("ApiException should have been raised")
+        except ApiException as e:
+            self.assertEqual(e.status_code, 400)
         file.close()
 
     @patch("requests.post")
@@ -38,7 +45,11 @@ class CloudflareImageServiceTests(TestCase):
             502, "<html>Failure</html>", False
         )
         file = get_dummy_image()
-        self.assertRaises(ApiException, self.service.upload, file)
+        try:
+            self.service.upload(file)
+            self.fail("ApiException should have been raised")
+        except ApiException as e:
+            self.assertEqual(e.status_code, 502)
         file.close()
 
     @patch("requests.post")
@@ -55,7 +66,11 @@ class CloudflareImageServiceTests(TestCase):
     def test_failed_open_default_variant(self, mock_get):
         mock_get.return_value = get_dummy_api_response(400, "", False)
         name = "image_id"
-        self.assertRaises(ApiException, self.service.open, name)
+        try:
+            self.service.open(name)
+            self.fail("ApiException should have been raised")
+        except ApiException as e:
+            self.assertEqual(e.status_code, 400)
 
     @patch("requests.get")
     def test_success_open_default_variant(self, mock_get):
@@ -68,7 +83,11 @@ class CloudflareImageServiceTests(TestCase):
     def test_failed_delete(self, mock_delete):
         mock_delete.return_value = get_dummy_api_response(400, "", False)
         name = "image_id"
-        self.assertRaises(ApiException, self.service.delete, name)
+        try:
+            self.service.delete(name)
+            self.fail("ApiException should have been raised")
+        except ApiException as e:
+            self.assertEqual(e.status_code, 400)
 
     @patch("requests.delete")
     def test_success_delete(self, mock_delete):
@@ -96,10 +115,48 @@ class CloudflareImageServiceTests(TestCase):
     @patch("requests.post")
     def test_failed_get_one_time_upload_url(self, mock_post):
         mock_post.return_value = get_dummy_api_response(400, "", False)
-        self.assertRaises(ApiException, self.service.get_one_time_upload_url)
+        try:
+            self.service.get_one_time_upload_url()
+            self.fail("ApiException should have been raised")
+        except ApiException as e:
+            self.assertEqual(e.status_code, 400)
 
     @patch("requests.post")
     def test_success_get_one_time_upload_url(self, mock_post):
         mock_post.return_value = get_dummy_api_response(200, "{}")
         result = self.service.get_one_time_upload_url()
         self.assertEqual(result, {})
+
+    @patch("requests.get")
+    def test_success_get_image_details(self, mock_get):
+        mock_get.return_value = get_dummy_api_response(
+            200, '{"result": {"id": "test", "uploaded": "2024-01-01T00:00:00Z"}}'
+        )
+        name = "image_id"
+        result = self.service.get_image_details(name)
+        self.assertEqual(result["id"], "test")
+        self.assertEqual(result["uploaded"], "2024-01-01T00:00:00Z")
+
+    @patch("requests.get")
+    def test_not_found_get_image_details(self, mock_get):
+        mock_get.return_value = get_dummy_api_response(
+            404, '{"errors": [{"message": "Image not found"}]}'
+        )
+        name = "image_id"
+        try:
+            self.service.get_image_details(name)
+            self.fail("ApiException should have been raised")
+        except ApiException as e:
+            self.assertEqual(e.status_code, 404)
+
+    @patch("requests.get")
+    def test_server_error_get_image_details(self, mock_get):
+        mock_get.return_value = get_dummy_api_response(
+            500, '{"errors": [{"message": "Internal server error"}]}'
+        )
+        name = "image_id"
+        try:
+            self.service.get_image_details(name)
+            self.fail("ApiException should have been raised")
+        except ApiException as e:
+            self.assertEqual(e.status_code, 500)

@@ -2,11 +2,13 @@
 Custom widget for Direct Creator Uploads
 """
 
-from typing import Any, Dict
+from typing import Any
+
 from django.forms.widgets import Widget
 from django.utils.datastructures import MultiValueDict
-from cloudflare_images.service import CloudflareImagesService
+
 from cloudflare_images.config import Config
+from cloudflare_images.service import CloudflareImagesService
 
 
 class CloudflareImagesWidget(Widget):
@@ -22,8 +24,8 @@ class CloudflareImagesWidget(Widget):
         return data.get(name)
 
     def get_context(
-        self, name: str, value: str | None, attrs: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, name: str, value: str | None, attrs: dict[str, Any]
+    ) -> dict[str, Any]:
         context = super().get_context(name, value, attrs)
         service = CloudflareImagesService()
         config = Config()

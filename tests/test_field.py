@@ -2,14 +2,15 @@
 Tests related to the CloudflareImagesField
 """
 
-from django.test import TestCase, override_settings
 from django import forms
-from cloudflare_images.widget import CloudflareImagesWidget
+from django.test import TestCase, override_settings
+
 from cloudflare_images.field import (
+    CloudflareImageIDField,
     CloudflareImagesField,
     CloudflareImagesFieldFile,
-    CloudflareImageIDField,
 )
+from cloudflare_images.widget import CloudflareImagesWidget
 
 
 class CloudflareImageFieldTests(TestCase):
@@ -98,6 +99,7 @@ class CloudflareImageIDTests(TestCase):
         form_field = field.formfield()
         self.assertIsInstance(form_field, forms.CharField)
 
-        # This line is here to satisfy `ty` as formfield returns either a forms.Field or None
+        # This line is here to satisfy `ty` as formfield returns either a
+        # forms.Field or None
         if form_field is not None:
             self.assertIsInstance(form_field.widget, CloudflareImagesWidget)

@@ -2,9 +2,11 @@
 Tests related to the CloudflareImagesWidget
 """
 
-from unittest.mock import Mock, patch
+from unittest.mock import patch
+
 from django.test import TestCase
 from django.utils.datastructures import MultiValueDict
+
 from cloudflare_images.widget import CloudflareImagesWidget
 
 

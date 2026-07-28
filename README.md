@@ -47,10 +47,9 @@ If you wish to use a default variant for a specific field you need to change you
 from cloudflare_images.field import CloudflareImagesField
 from django.db import models
 
+
 class MyModel(models.Model):
     image = CloudflareImagesField(variant="custom")
-
-
 ```
 
 Please note that you will need to migrate your model(s) once you swapped the field(s). No SQL will actually be applied (you can check by running `sqlmigrate <module> <number>`).
@@ -73,6 +72,21 @@ If you wish to override the default timeout of 60 seconds for API requests, you 
 CLOUDFLARE_IMAGES_API_TIMEOUT = 120
 ```
 
+## Checking if an Image Exists
+
+You can check if an image exists in Cloudflare Images using the storage's `exists()` method:
+
+```python
+from django.core.files.storage import default_storage
+
+if default_storage.exists("image_id"):
+    print("Image exists!")
+else:
+    print("Image not found")
+```
+
+**Note:** This method makes an HTTP API call to Cloudflare on every invocation. If you need to check many images, consider implementing your own caching layer to reduce API calls.
+
 ## Direct Creator Upload
 
 If you want to leverage Cloudflare's Direct Creator Upload (client side upload, similar to S3/Minio presigned URL concept), you need to do the following:
@@ -92,7 +106,6 @@ from cloudflare_images.views import WidgetAPI
 
 # And add inside your router:
 path("ext/cloudflare_images/api", WidgetAPI.as_view(), name="widget-api"),
-
 ```
 
 **Please note that it is much safer to implement your own endpoint to retrieve the one time URL from cloudflare**
@@ -100,7 +113,7 @@ path("ext/cloudflare_images/api", WidgetAPI.as_view(), name="widget-api"),
 You can override the endpoint to use like so:
 
 ```python
-CLOUDFLARE_IMAGES_UPLOAD_ENDPOINT="/my/endpoint/api"
+CLOUDFLARE_IMAGES_UPLOAD_ENDPOINT = "/my/endpoint/api"
 ```
 
 Please refer to [this file](https://github.com/KalvadTech/django-cloudflare-images/blob/468fd55f59a9edac4ecd2b25c361308994b60ef6/cloudflare_images/views.py) for the base implementation details

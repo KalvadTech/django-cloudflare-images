@@ -3,7 +3,8 @@ Tests related to the CloudflareImagesWidget URL patterns
 """
 
 from django.test import TestCase
-from django.urls import reverse, resolve
+from django.urls import resolve, reverse
+
 from cloudflare_images.views import WidgetAPI
 
 

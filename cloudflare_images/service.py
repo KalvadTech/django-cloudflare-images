@@ -2,9 +2,11 @@
 Contains the Cloudflare Image service which handles the API exchanges
 """
 
+from typing import Any
+
 import requests
 from django.core.files.base import File
-from typing import Any, Dict
+
 from cloudflare_images.config import Config
 
 
@@ -13,7 +15,9 @@ class ApiException(Exception):
     Exception raised by Cloudflare Images API
     """
 
-    pass
+    def __init__(self, message: str, status_code: int | None = None):
+        super().__init__(message)
+        self.status_code = status_code
 
 
 class CloudflareImagesService:
@@ -31,11 +35,9 @@ class CloudflareImagesService:
         """
         Uploads a file and returns its name, otherwise raises an exception
         """
-        url = "https://api.cloudflare.com/client/v4/accounts/{}/images/v1".format(
-            self.config.account_id
-        )
+        url = f"https://api.cloudflare.com/client/v4/accounts/{self.config.account_id}/images/v1"
 
-        headers = {"Authorization": "Bearer {}".format(self.config.api_token)}
+        headers = {"Authorization": f"Bearer {self.config.api_token}"}
 
         files = {"file": file}
 
@@ -45,7 +47,7 @@ class CloudflareImagesService:
 
         status_code = response.status_code
         if status_code != 200:
-            raise ApiException(response.content)
+            raise ApiException(str(response.content), status_code=status_code)
 
         response_body = response.json()
         return response_body.get("result").get("id")
@@ -55,13 +57,9 @@ class CloudflareImagesService:
         Returns the public URL for the given image ID
         """
         if self.config.domain:
-            return "https://{}/cdn-cgi/imagedelivery/{}/{}/{}".format(
-                self.config.domain, self.config.account_hash, name, variant
-            )
+            return f"https://{self.config.domain}/cdn-cgi/imagedelivery/{self.config.account_hash}/{name}/{variant}"
 
-        return "https://imagedelivery.net/{}/{}/{}".format(
-            self.config.account_hash, name, variant
-        )
+        return f"https://imagedelivery.net/{self.config.account_hash}/{name}/{variant}"
 
     def open(self, name: str, variant: str | None = None) -> bytes:
         """
@@ -74,7 +72,7 @@ class CloudflareImagesService:
 
         status_code = response.status_code
         if status_code != 200:
-            raise ApiException(response.content)
+            raise ApiException(str(response.content), status_code=status_code)
 
         return response.content
 
@@ -83,11 +81,9 @@ class CloudflareImagesService:
         Deletes a file if it exists, otherwise raise an exception
         """
 
-        url = "https://api.cloudflare.com/client/v4/accounts/{}/images/v1/{}".format(
-            self.config.account_id, name
-        )
+        url = f"https://api.cloudflare.com/client/v4/accounts/{self.config.account_id}/images/v1/{name}"
 
-        headers = {"Authorization": "Bearer {}".format(self.config.api_token)}
+        headers = {"Authorization": f"Bearer {self.config.api_token}"}
 
         response = requests.delete(
             url, timeout=self.config.api_timeout, headers=headers
@@ -95,23 +91,40 @@ class CloudflareImagesService:
 
         status_code = response.status_code
         if status_code != 200:
-            raise ApiException(str(response.text))
+            raise ApiException(str(response.text), status_code=status_code)
 
-    def get_one_time_upload_url(self) -> Dict[str, Any]:
+    def get_image_details(self, name: str) -> dict[str, Any]:
+        """
+        Fetches image details from Cloudflare API
+        Returns the result dict on success
+        Raises ApiException on any error (including 404)
+        """
+
+        url = f"https://api.cloudflare.com/client/v4/accounts/{self.config.account_id}/images/v1/{name}"
+
+        headers = {"Authorization": f"Bearer {self.config.api_token}"}
+
+        response = requests.get(url, timeout=self.config.api_timeout, headers=headers)
+
+        status_code = response.status_code
+        if status_code != 200:
+            raise ApiException(response.text, status_code=status_code)
+
+        return response.json().get("result")
+
+    def get_one_time_upload_url(self) -> dict[str, Any]:
         """
         Direct Creator Upload endpoint
         Generates a one time upload URL
         """
-        url = "https://api.cloudflare.com/client/v4/accounts/{}/images/v2/direct_upload".format(
-            self.config.account_id
-        )
+        url = f"https://api.cloudflare.com/client/v4/accounts/{self.config.account_id}/images/v2/direct_upload"
 
-        headers = {"Authorization": "Bearer {}".format(self.config.api_token)}
+        headers = {"Authorization": f"Bearer {self.config.api_token}"}
 
         response = requests.post(url, headers=headers, timeout=self.config.api_timeout)
 
         status_code = response.status_code
         if status_code != 200:
-            raise ApiException(response.text)
+            raise ApiException(response.text, status_code=status_code)
 
         return response.json()

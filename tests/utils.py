@@ -2,8 +2,8 @@
 Utils for running test
 """
 
-from unittest.mock import MagicMock
 import json
+from unittest.mock import MagicMock
 
 
 def get_dummy_image():

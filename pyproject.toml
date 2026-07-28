@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "django-cloudflare-images"
-version = "1.0.0"
+version = "1.1.0"
 description = "Cloudflare Images integration for Django"
 readme = "README.md"
 authors = [{name = "Pierre Guillemot", email = "pierre@kalvad.com"}]
@@ -51,10 +51,21 @@ include = ["cloudflare_images*"]
 cloudflare_images = ["templates/*", "static/*"]
 
 [tool.ruff]
-exclude = ["env"]
+exclude = [
+    "env",
+    "*.md",
+]
 
 [tool.ruff.lint]
-select = ["S"]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "S",    # security
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S105"]
