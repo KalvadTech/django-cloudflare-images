@@ -9,7 +9,7 @@ from django.core.files.storage import Storage
 from django.utils.deconstruct import deconstructible
 
 from cloudflare_images.config import Config
-from cloudflare_images.service import CloudflareImagesService
+from cloudflare_images.service import ApiException, CloudflareImagesService
 
 
 @deconstructible
@@ -90,8 +90,6 @@ class CloudflareImagesStorage(Storage):
         Raises:
             ApiException: If the API call fails for reasons other than 404
         """
-        from cloudflare_images.service import ApiException
-
         try:
             self.service.get_image_details(name)
             return True
