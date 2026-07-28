@@ -76,19 +76,11 @@ class CloudflareImagesStorage(Storage):
     def exists(self, name: str) -> bool:
         """
         Check if an image exists in Cloudflare Images.
+        An ApiException will be raised if something other than a 404 (False) happens.
 
         Note: This makes an HTTP API call to Cloudflare on every invocation.
         If you need to check many images, consider implementing your own
         caching layer to reduce API calls.
-
-        Args:
-            name: The Cloudflare image ID to check
-
-        Returns:
-            True if the image exists, False if it doesn't
-
-        Raises:
-            ApiException: If the API call fails for reasons other than 404
         """
         try:
             self.service.get_image_details(name)
