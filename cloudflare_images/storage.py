@@ -7,8 +7,9 @@ Django's default storage class: https://github.com/django/django/blob/main/djang
 from django.core.files.base import File
 from django.core.files.storage import Storage
 from django.utils.deconstruct import deconstructible
-from cloudflare_images.service import CloudflareImagesService
+
 from cloudflare_images.config import Config
+from cloudflare_images.service import CloudflareImagesService
 
 
 @deconstructible
@@ -72,14 +73,32 @@ class CloudflareImagesStorage(Storage):
         """
         self.service.delete(name)
 
-    def exists(self, name: str) -> None:
+    def exists(self, name: str) -> bool:
         """
-        Return True if a file referenced by the given name already exists in the
-        storage system, or False if the name is available for a new file.
+        Check if an image exists in Cloudflare Images.
+
+        Note: This makes an HTTP API call to Cloudflare on every invocation.
+        If you need to check many images, consider implementing your own
+        caching layer to reduce API calls.
+
+        Args:
+            name: The Cloudflare image ID to check
+
+        Returns:
+            True if the image exists, False if it doesn't
+
+        Raises:
+            ApiException: If the API call fails for reasons other than 404
         """
-        raise NotImplementedError(
-            "subclasses of Storage must provide an exists() method"
-        )
+        from cloudflare_images.service import ApiException
+
+        try:
+            self.service.get_image_details(name)
+            return True
+        except ApiException as e:
+            if e.status_code == 404:
+                return False
+            raise
 
     def listdir(self, path: str) -> None:
         """
@@ -107,7 +126,8 @@ class CloudflareImagesStorage(Storage):
 
     def url_with_variant(self, name: str, variant: str) -> str:
         """
-        Custom methods which allow to pass a variant and respect the original signature of `url`
+        Custom methods which allow to pass a variant and respect the original
+        signature of `url`
         """
         return self.service.get_url(name, variant)
 

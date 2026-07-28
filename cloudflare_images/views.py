@@ -3,9 +3,10 @@ Views for the widget
 """
 
 import json
+
 from django.http import HttpRequest, JsonResponse
-from django.apps import apps
 from django.views.generic import View
+
 from cloudflare_images.service import ApiException, CloudflareImagesService
 
 

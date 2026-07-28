@@ -2,11 +2,13 @@
 Tests related to the CloudflareImagesWidget Views
 """
 
-from unittest.mock import Mock, patch
-from django.test import TestCase, RequestFactory
+from unittest.mock import patch
+
 from django.http import JsonResponse
-from cloudflare_images.views import WidgetAPI
+from django.test import RequestFactory, TestCase
+
 from cloudflare_images.service import ApiException
+from cloudflare_images.views import WidgetAPI
 
 
 class WidgetAPITests(TestCase):

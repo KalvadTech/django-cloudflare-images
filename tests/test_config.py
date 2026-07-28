@@ -3,6 +3,7 @@ Tests related to the Config
 """
 
 from django.test import TestCase, override_settings
+
 from cloudflare_images.config import Config
 
 

@@ -1,3 +1,13 @@
+## 1.1.0
+
+### Features
+
+ * Added `exists()` method to Storage to check if an image exists in Cloudflare Images
+
+### Improvements
+
+ * Enhanced `ApiException` to include HTTP status code for better error handling
+
 ## 1.0.0
 
 ### Features

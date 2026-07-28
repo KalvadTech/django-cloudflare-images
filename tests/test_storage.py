@@ -3,9 +3,12 @@ Test related to the CloudflareImagesStorage
 """
 
 from unittest.mock import patch
+
 from django.test import TestCase, override_settings
-from cloudflare_images.storage import CloudflareImagesStorage
+
 from cloudflare_images.service import ApiException
+from cloudflare_images.storage import CloudflareImagesStorage
+
 from .utils import get_dummy_image, get_dummy_image_name
 
 
@@ -85,9 +88,36 @@ class CloudflareImageStorageTests(TestCase):
         name = "image_id"
         self.assertEqual(name, self.storage.get_valid_name(name))
 
-    def test_exists(self):
+    @patch("cloudflare_images.service.CloudflareImagesService.get_image_details")
+    def test_exists_true(self, mock_get_details):
+        mock_get_details.return_value = {
+            "id": "image_id",
+            "uploaded": "2024-01-01T00:00:00Z",
+        }
         name = "image_id"
-        self.assertRaises(NotImplementedError, self.storage.exists, name)
+        result = self.storage.exists(name)
+        self.assertTrue(result)
+        mock_get_details.assert_called_once_with(name)
+
+    @patch("cloudflare_images.service.CloudflareImagesService.get_image_details")
+    def test_exists_false(self, mock_get_details):
+        mock_get_details.side_effect = ApiException("Not found", status_code=404)
+        name = "image_id"
+        result = self.storage.exists(name)
+        self.assertFalse(result)
+        mock_get_details.assert_called_once_with(name)
+
+    @patch("cloudflare_images.service.CloudflareImagesService.get_image_details")
+    def test_exists_api_error(self, mock_get_details):
+        mock_get_details.side_effect = ApiException("Server error", status_code=500)
+        name = "image_id"
+        self.assertRaises(ApiException, self.storage.exists, name)
+
+    @patch("cloudflare_images.service.CloudflareImagesService.get_image_details")
+    def test_exists_no_status_code(self, mock_get_details):
+        mock_get_details.side_effect = ApiException("Network error", status_code=None)
+        name = "image_id"
+        self.assertRaises(ApiException, self.storage.exists, name)
 
     def test_listdir(self):
         path = "/my/path"
