@@ -19,7 +19,7 @@ class CloudflareImagesWidget(Widget):
     template_name = "widget.html"
 
     def value_from_datadict(
-        self, data: MultiValueDict[str, Any], files: MultiValueDict[str, Any], name: str
+        self, data: MultiValueDict, files: MultiValueDict, name: str
     ) -> str | None:
         return data.get(name)
 
