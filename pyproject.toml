@@ -38,9 +38,9 @@ Issues = "https://github.com/KalvadTech/django-cloudflare-images/issues"
 [project.optional-dependencies]
 dev = [
     "build==1.6.1",
-    "ruff==0.16.10",
-    "tox==4.64.8",
-    "ty==0.0.84",
+    "ruff==0.17.1",
+    "tox==4.67.1",
+    "ty==0.0.89",
 ]
 
 [tool.setuptools.packages.find]
