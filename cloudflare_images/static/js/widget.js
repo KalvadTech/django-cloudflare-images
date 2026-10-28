@@ -32,11 +32,17 @@ function clickListener(e, element) {
       var link = element.getElementsByTagName("a")[0];
       if (! link) {
         link = document.createElement("a");
-        link.setAttribute("target", "_blank");
         element.append(link);
       }
-      link.setAttribute("href", d.result.variants[0]);
-      link.innerHTML = d.result.id;
+      if (element.dataset.signed === "true") {
+        link.removeAttribute("href");
+        link.removeAttribute("target");
+        link.textContent = "Uploaded: " + d.result.id;
+      } else {
+        link.setAttribute("href", d.result.variants[0]);
+        link.setAttribute("target", "_blank");
+        link.textContent = d.result.id;
+      }
 
       var hidden_id = element.querySelectorAll("input[type='hidden']")[0];
       hidden_id.value = d.result.id;

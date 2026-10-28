@@ -3,6 +3,7 @@ Views for the widget
 """
 
 import json
+from typing import Any
 
 from django.http import HttpRequest, JsonResponse
 from django.views.generic import View
@@ -15,6 +16,13 @@ class WidgetAPI(View):
     View for the widget
     """
 
+    def get_upload_options(self, request: HttpRequest) -> dict[str, Any]:
+        """
+        Returns the options passed to get_one_time_upload_url.
+        Override this method to request private images.
+        """
+        return {}
+
     def get(self, request: HttpRequest) -> JsonResponse:
         """
         Returns a one time upload URL.
@@ -23,7 +31,7 @@ class WidgetAPI(View):
         """
         service = CloudflareImagesService()
         try:
-            data = service.get_one_time_upload_url()
+            data = service.get_one_time_upload_url(**self.get_upload_options(request))
             return JsonResponse(data)
         except ApiException as e:
             return JsonResponse(json.loads(str(e)), status=400)

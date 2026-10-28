@@ -2,6 +2,7 @@
 Tests related to the Config
 """
 
+from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase, override_settings
 
 from cloudflare_images.config import Config
@@ -62,3 +63,29 @@ class ConfigTests(TestCase):
     def test_custom_upload_endpoint(self):
         endpoint = self.config.upload_endpoint
         self.assertEqual(endpoint, "/test/api")
+
+    def test_signing_key(self):
+        signing_key = self.config.signing_key
+        self.assertIsNone(signing_key)
+
+    @override_settings(CLOUDFLARE_IMAGES_SIGNING_KEY="signing_key")
+    def test_custom_signing_key(self):
+        signing_key = self.config.signing_key
+        self.assertEqual(signing_key, "signing_key")
+
+    def test_signed_url_ttl(self):
+        ttl = self.config.signed_url_ttl
+        self.assertEqual(ttl, 86400)
+
+    @override_settings(CLOUDFLARE_IMAGES_SIGNED_URL_TTL=120)
+    def test_custom_signed_url_ttl(self):
+        ttl = self.config.signed_url_ttl
+        self.assertEqual(ttl, 120)
+
+    @override_settings(CLOUDFLARE_IMAGES_SIGNED_URL_TTL=0)
+    def test_invalid_signed_url_ttl(self):
+        self.assertRaises(ImproperlyConfigured, lambda: self.config.signed_url_ttl)
+
+    @override_settings(CLOUDFLARE_IMAGES_SIGNED_URL_TTL="not-a-number")
+    def test_non_numeric_signed_url_ttl(self):
+        self.assertRaises(ImproperlyConfigured, lambda: self.config.signed_url_ttl)

@@ -18,6 +18,15 @@ class CloudflareImagesWidget(Widget):
 
     template_name = "widget.html"
 
+    def __init__(
+        self,
+        attrs: dict[str, Any] | None = None,
+        *,
+        signed: bool = False,
+    ) -> None:
+        super().__init__(attrs)
+        self.signed = signed
+
     def value_from_datadict(
         self, data: MultiValueDict, files: MultiValueDict, name: str
     ) -> str | None:
@@ -31,8 +40,14 @@ class CloudflareImagesWidget(Widget):
         config = Config()
 
         context["widget"]["value"] = value
-        context["widget"]["url"] = service.get_url(value, "public") if value else None
+        context["widget"]["url"] = None
+        if value:
+            if self.signed:
+                context["widget"]["url"] = service.get_signed_url(value, config.variant)
+            else:
+                context["widget"]["url"] = service.get_url(value, config.variant)
         context["widget"]["upload_endpoint"] = config.upload_endpoint
+        context["widget"]["signed"] = self.signed
 
         return context
 

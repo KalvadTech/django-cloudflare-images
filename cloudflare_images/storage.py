@@ -4,6 +4,7 @@ default Storage (see README.md)
 Django's default storage class: https://github.com/django/django/blob/main/django/core/files/storage.py
 """
 
+from django.core.exceptions import ImproperlyConfigured
 from django.core.files.base import File
 from django.core.files.storage import Storage
 from django.utils.deconstruct import deconstructible
@@ -18,12 +19,13 @@ class CloudflareImagesStorage(Storage):
     Django storage for Cloudflare Images
     """
 
-    def __init__(self) -> None:
+    def __init__(self, require_signed_urls: bool = False) -> None:
         """
         Sets up the storage
         """
         super().__init__()
 
+        self.require_signed_urls = require_signed_urls
         self.service = CloudflareImagesService()
 
     def _open(self, name: str, mode: str = "rb") -> File:
@@ -33,7 +35,10 @@ class CloudflareImagesStorage(Storage):
         (and it fails without it) but it won't have any impact
         Has to be implemented.
         """
-        content = self.service.open(name)
+        if self.require_signed_urls:
+            content = self.service.open(name, signed=True)
+        else:
+            content = self.service.open(name)
         return File(content, name=name)
 
     def _save(self, name: str, content: File) -> str:
@@ -43,6 +48,13 @@ class CloudflareImagesStorage(Storage):
         """
         new_name = self.generate_filename(name)
         content.name = new_name
+        if self.require_signed_urls:
+            if not self.service.config.signing_key:
+                raise ImproperlyConfigured(
+                    "CLOUDFLARE_IMAGES_SIGNING_KEY must be set to upload "
+                    "private images."
+                )
+            return self.service.upload(content, require_signed_urls=True)
         return self.service.upload(content)
 
     def get_valid_name(self, name: str) -> str:
@@ -52,7 +64,7 @@ class CloudflareImagesStorage(Storage):
         """
         return name
 
-    def get_available_name(self, name: str, max_length: str | None = None) -> str:
+    def get_available_name(self, name: str, max_length: int | None = None) -> str:
         """
         Returns the available name for the file.
         Has to be implemented.
@@ -103,7 +115,10 @@ class CloudflareImagesStorage(Storage):
         """
         Return the total size, in bytes, of the file specified by name.
         """
-        content = self.service.open(name)
+        if self.require_signed_urls:
+            content = self.service.open(name, signed=True)
+        else:
+            content = self.service.open(name)
         return len(content)
 
     def url(self, name: str) -> str:
@@ -119,7 +134,24 @@ class CloudflareImagesStorage(Storage):
         Custom methods which allow to pass a variant and respect the original
         signature of `url`
         """
+        if self.require_signed_urls:
+            return self.service.get_signed_url(name, variant)
         return self.service.get_url(name, variant)
+
+    def signed_url(
+        self,
+        name: str,
+        variant: str | None = None,
+        expires_in: int | None = None,
+    ) -> str:
+        """
+        Returns a signed URL, regardless of the storage's private/public mode
+        """
+        return self.service.get_signed_url(
+            name,
+            variant or Config().variant,
+            expires_in,
+        )
 
     def get_accessed_time(self, name: str) -> None:
         """

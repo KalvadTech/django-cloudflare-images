@@ -11,6 +11,15 @@ from cloudflare_images.service import ApiException
 from cloudflare_images.views import WidgetAPI
 
 
+class PrivateWidgetAPI(WidgetAPI):
+    """
+    Test view requesting private uploads
+    """
+
+    def get_upload_options(self, request):
+        return {"require_signed_urls": True}
+
+
 class WidgetAPITests(TestCase):
     """
     Test case for the WidgetAPI view
@@ -55,3 +64,18 @@ class WidgetAPITests(TestCase):
 
         self.assertIsInstance(response, JsonResponse)
         self.assertEqual(response.status_code, 400)
+
+    @patch("cloudflare_images.views.CloudflareImagesService")
+    def test_get_upload_options(self, mock_service):
+        mock_service.return_value.get_one_time_upload_url.return_value = {
+            "uploadURL": "https://upload.example.com/token"
+        }
+
+        request = self.factory.get("/")
+        response = PrivateWidgetAPI().get(request)
+
+        self.assertIsInstance(response, JsonResponse)
+        self.assertEqual(response.status_code, 200)
+        mock_service.return_value.get_one_time_upload_url.assert_called_once_with(
+            require_signed_urls=True
+        )
