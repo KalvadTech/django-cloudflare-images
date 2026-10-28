@@ -1,3 +1,13 @@
+## 1.2.0
+
+### Features
+
+ * Added support for private images and signed URLs
+
+### Bugfix
+
+ * Fixed the Direct Creator Upload widget ignoring `CLOUDFLARE_IMAGES_VARIANT`
+
 ## 1.1.0
 
 ### Features
