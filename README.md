@@ -72,6 +72,18 @@ If you wish to override the default timeout of 60 seconds for API requests, you 
 CLOUDFLARE_IMAGES_API_TIMEOUT = 120
 ```
 
+If you wish to serve private images, add your signing key from the Cloudflare dashboard (Images > Keys):
+
+```python
+CLOUDFLARE_IMAGES_SIGNING_KEY = "..."
+```
+
+Signed URLs are valid for 24 hours by default. You can override this globally in seconds:
+
+```python
+CLOUDFLARE_IMAGES_SIGNED_URL_TTL = 3600
+```
+
 ## Checking if an Image Exists
 
 You can check if an image exists in Cloudflare Images using the storage's `exists()` method:
@@ -86,6 +98,102 @@ else:
 ```
 
 **Note:** This method makes an HTTP API call to Cloudflare on every invocation. If you need to check many images, consider implementing your own caching layer to reduce API calls.
+
+## Private Images and Signed URLs
+
+Cloudflare Images can serve private images that require a signed URL. Add your signing key to your settings (see [Setup](#setup)):
+
+```python
+CLOUDFLARE_IMAGES_SIGNING_KEY = "..."
+```
+
+### Server-side uploads
+
+Use a storage configured with `require_signed_urls=True` and attach it to your field:
+
+```python
+from cloudflare_images.field import CloudflareImagesField
+from cloudflare_images.storage import CloudflareImagesStorage
+
+private_storage = CloudflareImagesStorage(require_signed_urls=True)
+
+class Document(models.Model):
+    image = CloudflareImagesField(storage=private_storage)
+```
+
+With this storage:
+
+- uploads are created with `requireSignedURLs=true`;
+- `document.image.url` returns a signed URL;
+- `storage.open()` and `storage.size()` use signed URLs internally.
+
+If the whole project uses private images, you can configure the default storage instead of attaching a storage to each field (Django 4.2+):
+
+```python
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudflare_images.storage.CloudflareImagesStorage",
+        "OPTIONS": {"require_signed_urls": True},
+    },
+}
+```
+
+You can generate a signed URL explicitly, with a custom lifetime in seconds:
+
+```python
+url = document.image.signed_url(expires_in=300)
+# or, without a field:
+url = private_storage.signed_url("image_id", "public", expires_in=300)
+```
+
+If no `expires_in` is provided, `CLOUDFLARE_IMAGES_SIGNED_URL_TTL` is used (24 hours by default).
+
+### Direct Creator Upload
+
+To create private images with the direct upload flow, subclass the provided view and request private uploads:
+
+```python
+from cloudflare_images.views import WidgetAPI
+
+class PrivateWidgetAPI(WidgetAPI):
+    def get_upload_options(self, request):
+        return {"require_signed_urls": True}
+```
+
+Use `PrivateWidgetAPI` in your URL configuration instead of `WidgetAPI`, and generate signed preview URLs by passing `signed=True` to the widget:
+
+```python
+from django import forms
+
+from cloudflare_images.widget import CloudflareImagesWidget
+
+class MyForm(forms.ModelForm):
+    class Meta:
+        model = MyModel
+        fields = ["image"]
+        widgets = {"image": CloudflareImagesWidget(signed=True)}
+```
+
+After a private upload, the widget displays the image ID without a link until the form is saved and the page is rendered again, at which point the preview URL is signed.
+
+If you use `CloudflareImageIDField`, you can generate the URL yourself:
+
+```python
+from cloudflare_images.service import CloudflareImagesService
+
+@property
+def image_url(self):
+    if not self.image:
+        return None
+    return CloudflareImagesService().get_signed_url(self.image, "public")
+```
+
+**Caveats:**
+
+- Generate signed URLs when rendering; do not store them, as they expire.
+- Rotating the signing key invalidates all existing signed URLs.
+- Cloudflare's custom paths feature does not support private images.
+- Images uploaded with a custom ID cannot be made private with signed URLs.
 
 ## Direct Creator Upload
 

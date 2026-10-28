@@ -3,6 +3,9 @@ Contains the config for the library
 """
 
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
+
+DEFAULT_SIGNED_URL_TTL = 60 * 60 * 24
 
 
 class Config:
@@ -76,3 +79,33 @@ class Config:
             if hasattr(settings, "CLOUDFLARE_IMAGES_UPLOAD_ENDPOINT")
             else "/ext/cloudflare_images/api"
         )
+
+    @property
+    def signing_key(self) -> str | None:
+        """
+        Returns the setting CLOUDFLARE_IMAGES_SIGNING_KEY if available
+        """
+        return getattr(settings, "CLOUDFLARE_IMAGES_SIGNING_KEY", None) or None
+
+    @property
+    def signed_url_ttl(self) -> int:
+        """
+        Returns the lifetime of signed URLs in seconds, 24 hours by default
+        """
+        ttl = getattr(
+            settings, "CLOUDFLARE_IMAGES_SIGNED_URL_TTL", DEFAULT_SIGNED_URL_TTL
+        )
+
+        try:
+            ttl = int(ttl)
+        except (TypeError, ValueError) as exc:
+            raise ImproperlyConfigured(
+                "CLOUDFLARE_IMAGES_SIGNED_URL_TTL must be a positive integer."
+            ) from exc
+
+        if ttl <= 0:
+            raise ImproperlyConfigured(
+                "CLOUDFLARE_IMAGES_SIGNED_URL_TTL must be a positive integer."
+            )
+
+        return ttl

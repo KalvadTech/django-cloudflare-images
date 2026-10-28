@@ -37,6 +37,20 @@ class CloudflareImagesFieldFile(ImageFieldFile):
         """
         return self.storage.url_with_variant(self.name, variant=self.field.variant)
 
+    def signed_url(
+        self,
+        variant: str | None = None,
+        expires_in: int | None = None,
+    ) -> str:
+        """
+        Returns a signed URL for the file, using the field's variant by default
+        """
+        return self.storage.signed_url(
+            self.name,
+            variant or self.field.variant,
+            expires_in,
+        )
+
 
 class CloudflareImagesField(ImageField):
     """
