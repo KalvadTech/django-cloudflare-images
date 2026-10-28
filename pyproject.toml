@@ -34,6 +34,7 @@ dependencies = [
 Homepage = "https://github.com/KalvadTech/django-cloudflare-images"
 Repository = "https://github.com/KalvadTech/django-cloudflare-images"
 Issues = "https://github.com/KalvadTech/django-cloudflare-images/issues"
+Contributing = "https://github.com/KalvadTech/django-cloudflare-images/blob/main/CONTRIBUTING.md"
 
 [project.optional-dependencies]
 dev = [

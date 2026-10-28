@@ -1,6 +1,7 @@
 # django-cloudflare-images
 
-This is a Django library to add support to Cloudflare Images to the ImageField.
+A Django integration for Cloudflare Images, providing a storage backend, model
+fields, and a Direct Creator Upload widget.
 
 It supports:
 
@@ -15,25 +16,11 @@ It supports:
 pip install django-cloudflare-images
 ```
 
+Python 3.10 or later is required.
+
 ## Setup
 
-You need to add the following your settings.py:
-
-
-1. If you are running Django 4.2+:
-
-```python
-STORAGES = {"default": {"BACKEND": "cloudflare_images.storage.CloudflareImagesStorage"}}
-```
-
-2. Else:
-
-
-```python
-DEFAULT_FILE_STORAGE = "cloudflare_images.storage.CloudflareImagesStorage"
-```
-
-And then add the remaining of the configuration:
+Add your Cloudflare Images credentials to `settings.py`:
 
 ```python
 CLOUDFLARE_IMAGES_ACCOUNT_ID = "XXX"
@@ -41,52 +28,58 @@ CLOUDFLARE_IMAGES_API_TOKEN = "YYY"
 CLOUDFLARE_IMAGES_ACCOUNT_HASH = "ZZZ"
 ```
 
-If you wish to use a default variant for a specific field you need to change your `ImageField` to a `CloudflareImagesField` see example below:
+Then configure the storage backend.
+
+For Django 4.2+:
 
 ```python
-from cloudflare_images.field import CloudflareImagesField
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudflare_images.storage.CloudflareImagesStorage",
+    },
+}
+```
+
+For older Django versions:
+
+```python
+DEFAULT_FILE_STORAGE = "cloudflare_images.storage.CloudflareImagesStorage"
+```
+
+### Optional settings
+
+| Setting | Default | Description |
+| --- | --- | --- |
+| `CLOUDFLARE_IMAGES_DOMAIN` | `None` | Custom domain used to serve images. |
+| `CLOUDFLARE_IMAGES_VARIANT` | `"public"` | Default variant used to serve images. |
+| `CLOUDFLARE_IMAGES_API_TIMEOUT` | `60` | Timeout for Cloudflare API requests, in seconds. |
+| `CLOUDFLARE_IMAGES_UPLOAD_ENDPOINT` | `"/ext/cloudflare_images/api"` | Endpoint used to retrieve Direct Creator Upload URLs. |
+| `CLOUDFLARE_IMAGES_SIGNING_KEY` | `None` | Signing key used to serve private images. |
+| `CLOUDFLARE_IMAGES_SIGNED_URL_TTL` | `86400` | Lifetime of signed URLs, in seconds. |
+
+## Usage
+
+### Per-field variants
+
+To use a specific variant for a field, replace `ImageField` with
+`CloudflareImagesField`:
+
+```python
 from django.db import models
+
+from cloudflare_images.field import CloudflareImagesField
 
 
 class MyModel(models.Model):
     image = CloudflareImagesField(variant="custom")
 ```
 
-Please note that you will need to migrate your model(s) once you swapped the field(s). No SQL will actually be applied (you can check by running `sqlmigrate <module> <number>`).
+You will need to generate a migration after swapping the fields. No SQL is
+applied; you can verify this with `sqlmigrate <app> <migration>`.
 
-If you wish to use a custom domain to serve your images you need to add the following to your settings.py:
+### Checking if an image exists
 
-```python
-CLOUDFLARE_IMAGES_DOMAIN = "example.com"
-```
-
-If you wish to use a default variant other than "public" to serve your images you need to add the following to your settings.py:
-
-```python
-CLOUDFLARE_IMAGES_VARIANT = "custom"
-```
-
-If you wish to override the default timeout of 60 seconds for API requests, you need to add the following to your settings.py:
-
-```python
-CLOUDFLARE_IMAGES_API_TIMEOUT = 120
-```
-
-If you wish to serve private images, add your signing key from the Cloudflare dashboard (Images > Keys):
-
-```python
-CLOUDFLARE_IMAGES_SIGNING_KEY = "..."
-```
-
-Signed URLs are valid for 24 hours by default. You can override this globally in seconds:
-
-```python
-CLOUDFLARE_IMAGES_SIGNED_URL_TTL = 3600
-```
-
-## Checking if an Image Exists
-
-You can check if an image exists in Cloudflare Images using the storage's `exists()` method:
+Use the storage's `exists()` method:
 
 ```python
 from django.core.files.storage import default_storage
@@ -97,11 +90,13 @@ else:
     print("Image not found")
 ```
 
-**Note:** This method makes an HTTP API call to Cloudflare on every invocation. If you need to check many images, consider implementing your own caching layer to reduce API calls.
+**Note:** This makes an HTTP API call to Cloudflare on every invocation. If you
+check many images, consider adding your own caching layer.
 
 ## Private Images and Signed URLs
 
-Cloudflare Images can serve private images that require a signed URL. Add your signing key to your settings (see [Setup](#setup)):
+Cloudflare Images can serve private images that require a signed URL. Add your
+signing key from the Cloudflare dashboard (Images > Keys):
 
 ```python
 CLOUDFLARE_IMAGES_SIGNING_KEY = "..."
@@ -109,13 +104,18 @@ CLOUDFLARE_IMAGES_SIGNING_KEY = "..."
 
 ### Server-side uploads
 
-Use a storage configured with `require_signed_urls=True` and attach it to your field:
+Use a storage configured with `require_signed_urls=True` and attach it to your
+field:
 
 ```python
+from django.db import models
+
 from cloudflare_images.field import CloudflareImagesField
 from cloudflare_images.storage import CloudflareImagesStorage
 
+
 private_storage = CloudflareImagesStorage(require_signed_urls=True)
+
 
 class Document(models.Model):
     image = CloudflareImagesField(storage=private_storage)
@@ -127,7 +127,8 @@ With this storage:
 - `document.image.url` returns a signed URL;
 - `storage.open()` and `storage.size()` use signed URLs internally.
 
-If the whole project uses private images, you can configure the default storage instead of attaching a storage to each field (Django 4.2+):
+If the whole project uses private images, you can configure the default storage
+instead of attaching a storage to each field (Django 4.2+):
 
 ```python
 STORAGES = {
@@ -138,57 +139,21 @@ STORAGES = {
 }
 ```
 
+### Explicit signed URLs
+
 You can generate a signed URL explicitly, with a custom lifetime in seconds:
 
 ```python
 url = document.image.signed_url(expires_in=300)
-# or, without a field:
+
+# Or, without a field:
 url = private_storage.signed_url("image_id", "public", expires_in=300)
 ```
 
-If no `expires_in` is provided, `CLOUDFLARE_IMAGES_SIGNED_URL_TTL` is used (24 hours by default).
+If `expires_in` is omitted, `CLOUDFLARE_IMAGES_SIGNED_URL_TTL` is used (24 hours
+by default).
 
-### Direct Creator Upload
-
-To create private images with the direct upload flow, subclass the provided view and request private uploads:
-
-```python
-from cloudflare_images.views import WidgetAPI
-
-class PrivateWidgetAPI(WidgetAPI):
-    def get_upload_options(self, request):
-        return {"require_signed_urls": True}
-```
-
-Use `PrivateWidgetAPI` in your URL configuration instead of `WidgetAPI`, and generate signed preview URLs by passing `signed=True` to the widget:
-
-```python
-from django import forms
-
-from cloudflare_images.widget import CloudflareImagesWidget
-
-class MyForm(forms.ModelForm):
-    class Meta:
-        model = MyModel
-        fields = ["image"]
-        widgets = {"image": CloudflareImagesWidget(signed=True)}
-```
-
-After a private upload, the widget displays the image ID without a link until the form is saved and the page is rendered again, at which point the preview URL is signed.
-
-If you use `CloudflareImageIDField`, you can generate the URL yourself:
-
-```python
-from cloudflare_images.service import CloudflareImagesService
-
-@property
-def image_url(self):
-    if not self.image:
-        return None
-    return CloudflareImagesService().get_signed_url(self.image, "public")
-```
-
-**Caveats:**
+### Caveats
 
 - Generate signed URLs when rendering; do not store them, as they expire.
 - Rotating the signing key invalidates all existing signed URLs.
@@ -197,106 +162,121 @@ def image_url(self):
 
 ## Direct Creator Upload
 
-If you want to leverage Cloudflare's Direct Creator Upload (client side upload, similar to S3/Minio presigned URL concept), you need to do the following:
+Cloudflare's Direct Creator Upload lets users upload images directly to
+Cloudflare without exposing your API token.
 
-Modify your settings:
+### Setup
+
+Add the app to `INSTALLED_APPS`:
 
 ```python
 INSTALLED_APPS = [
+    # ...
     "cloudflare_images",
 ]
 ```
 
-Modify your urls:
+Add the endpoint to your URL configuration:
 
 ```python
 from cloudflare_images.views import WidgetAPI
 
-# And add inside your router:
+# Add this inside your urlpatterns:
 path("ext/cloudflare_images/api", WidgetAPI.as_view(), name="widget-api"),
 ```
 
-**Please note that it is much safer to implement your own endpoint to retrieve the one time URL from cloudflare**
+**Note:** The provided endpoint has no security and should be treated as an
+example. It is strongly recommended to implement your own endpoint. See
+[cloudflare_images/views.py](https://github.com/KalvadTech/django-cloudflare-images/blob/main/cloudflare_images/views.py)
+for the base implementation.
 
-You can override the endpoint to use like so:
+To point the widget at a custom endpoint:
 
 ```python
 CLOUDFLARE_IMAGES_UPLOAD_ENDPOINT = "/my/endpoint/api"
 ```
 
-Please refer to [this file](https://github.com/KalvadTech/django-cloudflare-images/blob/468fd55f59a9edac4ecd2b25c361308994b60ef6/cloudflare_images/views.py) for the base implementation details
+### Model
 
-Modify/Add to your model:
+Replace your image field with `CloudflareImageIDField`:
 
 ```python
 from cloudflare_images.field import CloudflareImageIDField
 
-# in your model:
-image = CloudflareImageIDField(variant="test")
+# In your model:
+image = CloudflareImageIDField(variant="custom")
 ```
 
-If you are changing from a `CloudflareImagesField`, please note that you need to generate a migration (`python manage.py makemigrations`) and that this new field is **not backward compatible** in particular to access the `.url` field. To access your field's URL it is recommended to write a helper (or use a custom mixin) in your model like so:
+Generate a migration after changing the field. This field is not backward
+compatible with `CloudflareImagesField`, particularly for `.url`; use a helper
+to generate URLs.
 
-```python
-from cloudflare_images.service import CloudflareImagesService
+### Template
 
-    @property
-    def image_url(self) -> str | None:
-        if not self.image:
-            return None
-        service = CloudflareImagesService()
-        return service.get_url(self.image, "public") # or any variant that you want
-```
-
-Modify your HTML template using a django form to load the JS/CSS:
+Load the widget assets from your form:
 
 ```html
 {{ form.media.js }}
 {{ form.media.css }}
 ```
 
-And you should be good to go. For basic troubleshooting, check your browser's console for hints or open a ticket.
+### Private uploads
 
-## Development
+To create private images, subclass the provided view and request private
+uploads:
 
-Installing for development:
+```python
+from cloudflare_images.views import WidgetAPI
 
-```sh
-make install
+
+class PrivateWidgetAPI(WidgetAPI):
+    def get_upload_options(self, request):
+        return {"require_signed_urls": True}
 ```
 
-Cleaning the installation:
+Use this view in your URL configuration, and enable signed previews in the form:
 
-```sh
-make clean
+```python
+from django import forms
+
+from cloudflare_images.widget import CloudflareImagesWidget
+
+
+class MyForm(forms.ModelForm):
+    class Meta:
+        model = MyModel
+        fields = ["image"]
+        widgets = {"image": CloudflareImagesWidget(signed=True)}
 ```
 
-Format the code:
+After a private upload, the widget displays the image ID without a link until
+the form is saved and the page is rendered again.
 
-```sh
-make format
+### Generating URLs
+
+`CloudflareImageIDField` stores only the image ID, so use the service to build
+the URL:
+
+```python
+from cloudflare_images.service import CloudflareImagesService
+
+
+@property
+def image_url(self) -> str | None:
+    if not self.image:
+        return None
+    return CloudflareImagesService().get_url(self.image, "public")
 ```
 
-Check the code (for linting errors):
+For private images, use `get_signed_url()` instead:
 
-```sh
-make check
+```python
+return CloudflareImagesService().get_signed_url(self.image, "public")
 ```
 
-Check the code (python type checker):
+For basic troubleshooting, check your browser's console or open an issue.
 
-```sh
-make static-check
-```
+## Contributing
 
-Running all tests:
-
-```sh
-make test
-```
-
-Create a sdist+bdist package in dist/:
-
-```sh
-make package
-```
+See [CONTRIBUTING.md](https://github.com/KalvadTech/django-cloudflare-images/blob/main/CONTRIBUTING.md)
+for development setup, tests, and packaging.
