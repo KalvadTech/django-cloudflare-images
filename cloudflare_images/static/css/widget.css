@@ -40,3 +40,18 @@
   background: #f0f0f0;
 }
 
+.ci-widget button:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.ci-widget-error {
+  color: #b00020;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.ci-widget-error:empty {
+  display: none;
+}
+
