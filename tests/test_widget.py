@@ -108,6 +108,92 @@ class CloudflareImagesWidgetTests(TestCase):
         )
         mock_service.return_value.get_url.assert_not_called()
 
+    def test_render_defaults(self):
+        html = self.widget.render("image", None)
+
+        self.assertIn('type="file"', html)
+        self.assertIn('accept="image/*"', html)
+        self.assertIn('type="button"', html)
+        self.assertIn('id="image-file"', html)
+        self.assertIn('id="image"', html)
+        self.assertIn('id="image-file-error"', html)
+        self.assertIn('aria-describedby="image-file-error"', html)
+
+    def test_render_attrs(self):
+        widget = CloudflareImagesWidget(
+            attrs={
+                "class": "custom",
+                "required": True,
+                "data-testid": "upload",
+                "capture": "environment",
+                "aria-label": "Upload image",
+            }
+        )
+
+        html = widget.render("image", None)
+
+        self.assertIn('class="custom"', html)
+        self.assertIn(" required", html)
+        self.assertIn('data-testid="upload"', html)
+        self.assertIn('capture="environment"', html)
+        self.assertIn('aria-label="Upload image"', html)
+
+    def test_render_required_with_existing_value(self):
+        widget = CloudflareImagesWidget(attrs={"required": True})
+
+        html = widget.render("image", "image_id")
+
+        self.assertNotIn(" required", html)
+
+    def test_render_accept_override(self):
+        widget = CloudflareImagesWidget(attrs={"accept": "image/png"})
+
+        html = widget.render("image", None)
+
+        self.assertIn('accept="image/png"', html)
+        self.assertNotIn('accept="image/*"', html)
+
+    def test_render_explicit_id(self):
+        widget = CloudflareImagesWidget(attrs={"id": "custom"})
+
+        html = widget.render("image", None)
+
+        self.assertIn('id="custom"', html)
+        self.assertIn('id="custom-value"', html)
+        self.assertIn('id="custom-error"', html)
+        self.assertIn('aria-describedby="custom-error"', html)
+
+    def test_render_ignores_unsupported_attrs(self):
+        widget = CloudflareImagesWidget(
+            attrs={
+                "name": "bad-name",
+                "value": "bad-value",
+                "type": "text",
+                "multiple": True,
+            }
+        )
+
+        html = widget.render("image", None)
+
+        self.assertNotIn('name="bad-name"', html)
+        self.assertNotIn('value="bad-value"', html)
+        self.assertNotIn('type="text"', html)
+        self.assertNotIn("multiple", html)
+
+    def test_render_disabled(self):
+        widget = CloudflareImagesWidget(attrs={"disabled": True})
+
+        html = widget.render("image", None)
+
+        self.assertEqual(html.count(" disabled"), 2)
+
+    def test_render_combines_aria_describedby(self):
+        widget = CloudflareImagesWidget(attrs={"aria-describedby": "help-text"})
+
+        html = widget.render("image", None)
+
+        self.assertIn('aria-describedby="help-text image-file-error"', html)
+
     def test_media_css(self):
         media = CloudflareImagesWidget.Media.css
         self.assertEqual(media["all"], ["css/widget.css"])

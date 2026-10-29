@@ -1,3 +1,5 @@
+from pathlib import Path
+
 INSTALLED_APPS = ("cloudflare_images",)
 DATABASES = {
     "default": {
@@ -9,6 +11,19 @@ SECRET_KEY = "top_secret"
 # This is here to avoid Django's warning when running tests about the upcoming
 # change in Django 5.0
 USE_TZ = True
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [
+            str(
+                Path(__file__).resolve().parent.parent
+                / "cloudflare_images"
+                / "templates"
+            )
+        ],
+    },
+]
 
 DEFAULT_FILE_STORAGE = "cloudflare_images.storage.CloudflareImagesStorage"
 CLOUDFLARE_IMAGES_ACCOUNT_ID = "account_id"

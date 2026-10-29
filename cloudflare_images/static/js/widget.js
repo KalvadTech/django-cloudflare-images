@@ -1,67 +1,149 @@
-function getOneTimeUploadUrl(upload_endpoint) {
-  var url = document.location.origin + upload_endpoint;
+function getErrorMessage(response) {
+  return response.json().then(function(data) {
+    if (data && data.error) {
+      if (typeof data.error === "string") {
+        return data.error;
+      }
 
-  return fetch(url).then(function(response) {
-    if (!response.ok) {
-      throw new Error("HTTP status:" + response.status);
+      return JSON.stringify(data.error);
     }
 
-    return response.json();
-  }).then(function(data) {
-    return data;
-  }).catch(function(err) {
-    console.error("Something went wrong: " + err);
+    return "HTTP status: " + response.status;
+  }).catch(function() {
+    return "HTTP status: " + response.status;
   });
 }
 
-function clickListener(e, element) {
+function getOneTimeUploadUrl(uploadEndpoint) {
+  var url = document.location.origin + uploadEndpoint;
+
+  return fetch(url).then(function(response) {
+    if (!response.ok) {
+      return getErrorMessage(response).then(function(message) {
+        throw new Error(message);
+      });
+    }
+
+    return response.json();
+  });
+}
+
+function showError(element, message) {
+  var error = element.querySelector(".ci-widget-error");
+
+  if (error) {
+    error.textContent = message || "";
+  }
+}
+
+function setUploading(button, uploading) {
+  if (! button) {
+    return;
+  }
+
+  if (uploading) {
+    button.dataset.defaultLabel = button.textContent;
+    button.textContent = "Uploading...";
+  } else {
+    button.textContent = button.dataset.defaultLabel || "Upload";
+  }
+
+  button.disabled = uploading;
+}
+
+function clickListener(e, element, button) {
   e.preventDefault();
 
-  e.target.disabled = true;
+  var fileInput = element.querySelector("input[type='file']");
+  var file = fileInput && fileInput.files ? fileInput.files[0] : null;
 
-  getOneTimeUploadUrl(element.dataset.uploadEndpoint).then(function(response) {
-    var data = new FormData();
-    data.append("file", element.querySelectorAll("input[type='file']")[0].files[0]);
+  showError(element, "");
 
-    fetch(response.result.uploadURL, {
-      method: "POST",
-      body: data
-    }).then(function(response) {
+  if (! file) {
+    showError(element, "Please select an image.");
+    return;
+  }
+
+  setUploading(button, true);
+
+  getOneTimeUploadUrl(element.dataset.uploadEndpoint)
+    .then(function(response) {
+      if (! response.result || ! response.result.uploadURL) {
+        throw new Error("Cloudflare did not return an upload URL.");
+      }
+
+      var data = new FormData();
+      data.append("file", file);
+
+      return fetch(response.result.uploadURL, {
+        method: "POST",
+        body: data
+      });
+    })
+    .then(function(response) {
+      if (! response.ok) {
+        return getErrorMessage(response).then(function(message) {
+          throw new Error(message);
+        });
+      }
+
       return response.json();
-    }).then(function(d) {
+    })
+    .then(function(d) {
+      if (! d.result || ! d.result.id) {
+        throw new Error("Cloudflare did not return an image ID.");
+      }
+
       var link = element.getElementsByTagName("a")[0];
       if (! link) {
         link = document.createElement("a");
         element.append(link);
       }
+
       if (element.dataset.signed === "true") {
         link.removeAttribute("href");
         link.removeAttribute("target");
         link.textContent = "Uploaded: " + d.result.id;
       } else {
-        link.setAttribute("href", d.result.variants[0]);
+        var variants = d.result.variants || [];
+        if (variants[0]) {
+          link.setAttribute("href", variants[0]);
+        } else {
+          link.removeAttribute("href");
+        }
         link.setAttribute("target", "_blank");
         link.textContent = d.result.id;
       }
 
-      var hidden_id = element.querySelectorAll("input[type='hidden']")[0];
-      hidden_id.value = d.result.id;
-
-      e.target.disabled = false;
+      var hiddenId = element.querySelector("input[type='hidden']");
+      if (hiddenId) {
+        hiddenId.value = d.result.id;
+      }
+    })
+    .catch(function(err) {
+      showError(element, err.message || "Upload failed.");
+    })
+    .finally(function() {
+      setUploading(button, false);
     });
-
-  });
 }
 
 function setupUploadForm(element) {
-  var submit = element.getElementsByTagName("button")[0];
-  submit.addEventListener("click", function(e) { clickListener(e, element)});
+  var button = element.querySelector("button");
+
+  if (! button) {
+    return;
+  }
+
+  button.addEventListener("click", function(e) {
+    clickListener(e, element, button);
+  });
 }
 
-window.addEventListener('DOMContentLoaded', function() {
-  var elements = document.getElementsByClassName("ci-widget");
+window.addEventListener("DOMContentLoaded", function() {
+  var elements = document.querySelectorAll(".ci-widget");
 
-  for (element of elements) {
-    setupUploadForm(element);
+  for (var i = 0; i < elements.length; i++) {
+    setupUploadForm(elements[i]);
   }
 });
