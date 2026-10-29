@@ -34,4 +34,20 @@ class WidgetAPI(View):
             data = service.get_one_time_upload_url(**self.get_upload_options(request))
             return JsonResponse(data)
         except ApiException as e:
-            return JsonResponse(json.loads(str(e)), status=400)
+            return self._error_response(e)
+
+    def _error_response(self, exception: ApiException) -> JsonResponse:
+        """
+        Returns a JSON error response, even when Cloudflare sends HTML or text.
+        The upstream status is not forwarded; this example endpoint always
+        returns 400 for Cloudflare API errors.
+        """
+        try:
+            payload = json.loads(str(exception))
+        except (json.JSONDecodeError, TypeError):
+            payload = {"error": str(exception)}
+
+        if not isinstance(payload, dict):
+            payload = {"error": payload}
+
+        return JsonResponse(payload, status=400)
