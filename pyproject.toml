@@ -22,6 +22,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Typing :: Typed",
     "Operating System :: OS Independent",
 ]
 requires-python = ">=3.10"
@@ -49,7 +50,12 @@ where = ["."]
 include = ["cloudflare_images*"]
 
 [tool.setuptools.package-data]
-cloudflare_images = ["templates/*", "static/*"]
+cloudflare_images = [
+    "templates/*",
+    "static/css/*",
+    "static/js/*",
+    "py.typed",
+]
 
 [tool.ruff]
 exclude = [
