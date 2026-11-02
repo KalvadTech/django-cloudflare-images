@@ -1,3 +1,18 @@
+## 1.3.0
+
+### Features
+
+ * Added support for widget attributes and inline upload errors
+
+### Improvements
+
+ * Added a `py.typed` marker and `Typing :: Typed` classifier for type checkers
+
+### Bugfix
+
+ * Fixed non-JSON Cloudflare errors causing an HTTP 500 in the widget API
+ * Fixed widget CSS/JS assets missing from built packages
+
 ## 1.2.0
 
 ### Features
