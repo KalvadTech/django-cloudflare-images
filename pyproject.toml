@@ -40,9 +40,9 @@ Contributing = "https://github.com/KalvadTech/django-cloudflare-images/blob/main
 [project.optional-dependencies]
 dev = [
     "build==1.6.1",
-    "ruff==0.17.2",
-    "tox==4.67.1",
-    "ty==0.0.92",
+    "ruff==0.17.3",
+    "tox==4.67.5",
+    "ty==0.0.95",
 ]
 
 [tool.setuptools.packages.find]
