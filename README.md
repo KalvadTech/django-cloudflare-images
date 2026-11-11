@@ -81,6 +81,16 @@ class MyModel(models.Model):
 You will need to generate a migration after swapping the fields. No SQL is
 applied; you can verify this with `sqlmigrate <app> <migration>`.
 
+You can access other variants from Python:
+
+```python
+obj.image.url                     # field variant
+obj.image.url_with_variant("thumb")
+```
+
+Django templates cannot call methods with arguments, so expose a property on
+your model if you need another variant in a template.
+
 ### Checking if an image exists
 
 Use the storage's `exists()` method:
