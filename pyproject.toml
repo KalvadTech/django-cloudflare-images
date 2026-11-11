@@ -23,12 +23,13 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Typing :: Typed",
     "Operating System :: OS Independent",
 ]
 requires-python = ">=3.10"
 dependencies = [
-    "Django>=3",
+    "Django>=3.2",
     "requests>=2.20.0",
 ]
 
