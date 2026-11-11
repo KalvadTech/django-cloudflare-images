@@ -59,6 +59,7 @@ DEFAULT_FILE_STORAGE = "cloudflare_images.storage.CloudflareImagesStorage"
 | `CLOUDFLARE_IMAGES_UPLOAD_ENDPOINT` | `"/ext/cloudflare_images/api"` | Endpoint used to retrieve Direct Creator Upload URLs. |
 | `CLOUDFLARE_IMAGES_SIGNING_KEY` | `None` | Signing key used to serve private images. |
 | `CLOUDFLARE_IMAGES_SIGNED_URL_TTL` | `86400` | Lifetime of signed URLs, in seconds. |
+| `CLOUDFLARE_IMAGES_ORIGINAL_IMAGE` | `False` | Use the original image for file access instead of the delivery variant. |
 
 ## Usage
 
@@ -95,6 +96,31 @@ else:
 
 **Note:** This makes an HTTP API call to Cloudflare on every invocation. If you
 check many images, consider adding your own caching layer.
+
+### Original images
+
+By default, `image.file`, `storage.open()` and `storage.size()` use the
+configured delivery variant, while `.url` uses that variant as well.
+
+To access the original image instead, enable:
+
+```python
+CLOUDFLARE_IMAGES_ORIGINAL_IMAGE = True
+```
+
+You can also enable it for a specific storage instance:
+
+```python
+from cloudflare_images.storage import CloudflareImagesStorage
+
+storage = CloudflareImagesStorage(original_image=True)
+```
+
+Original images are fetched through the Cloudflare API, so the API token needs
+the `Images Read` permission. `.url` is unaffected and still uses the configured
+variant. Original access can be slower and download more data than the delivery
+variant. For private images, original file access uses the API token and does
+not require a signed URL.
 
 ## Private Images and Signed URLs
 

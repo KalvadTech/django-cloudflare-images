@@ -109,3 +109,10 @@ class Config:
             )
 
         return ttl
+
+    @property
+    def original_image(self) -> bool:
+        """
+        Returns the setting CLOUDFLARE_IMAGES_ORIGINAL_IMAGE, False by default
+        """
+        return bool(getattr(settings, "CLOUDFLARE_IMAGES_ORIGINAL_IMAGE", False))

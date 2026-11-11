@@ -19,14 +19,37 @@ class CloudflareImagesStorage(Storage):
     Django storage for Cloudflare Images
     """
 
-    def __init__(self, require_signed_urls: bool = False) -> None:
+    def __init__(
+        self,
+        require_signed_urls: bool = False,
+        original_image: bool | None = None,
+    ) -> None:
         """
         Sets up the storage
         """
         super().__init__()
 
         self.require_signed_urls = require_signed_urls
+        self.original_image = original_image
         self.service = CloudflareImagesService()
+
+    def _uses_original_image(self) -> bool:
+        """
+        Returns whether files should be opened from the original image
+        """
+        if self.original_image is None:
+            return self.service.config.original_image
+        return self.original_image
+
+    def _read(self, name: str) -> bytes:
+        """
+        Returns the file content, using the original image if configured
+        """
+        if self._uses_original_image():
+            return self.service.open(name, original=True)
+        if self.require_signed_urls:
+            return self.service.open(name, signed=True)
+        return self.service.open(name)
 
     def _open(self, name: str, mode: str = "rb") -> File:
         """
@@ -35,11 +58,7 @@ class CloudflareImagesStorage(Storage):
         (and it fails without it) but it won't have any impact
         Has to be implemented.
         """
-        if self.require_signed_urls:
-            content = self.service.open(name, signed=True)
-        else:
-            content = self.service.open(name)
-        return File(content, name=name)
+        return File(self._read(name), name=name)
 
     def _save(self, name: str, content: File) -> str:
         """
@@ -115,11 +134,7 @@ class CloudflareImagesStorage(Storage):
         """
         Return the total size, in bytes, of the file specified by name.
         """
-        if self.require_signed_urls:
-            content = self.service.open(name, signed=True)
-        else:
-            content = self.service.open(name)
-        return len(content)
+        return len(self._read(name))
 
     def url(self, name: str) -> str:
         """
