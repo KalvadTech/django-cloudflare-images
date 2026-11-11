@@ -5,10 +5,13 @@ fields, and a Direct Creator Upload widget.
 
 It supports:
 
- * Django 3
- * Django 4
- * Django 5
- * Django 6
+ * Django 3.2
+ * Django 4.2
+ * Django 5.2
+ * Django 6.0
+ * Django 6.1
+
+Python 3.10 to 3.15 are supported, depending on the Django version.
 
 ## Installation
 
