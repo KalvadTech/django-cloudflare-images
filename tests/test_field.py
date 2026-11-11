@@ -93,6 +93,32 @@ class CloudflareImageFieldFileTests(TestCase):
         )
         self.assertEqual(url, hardcoded_url)
 
+    def test_url_with_variant(self):
+        field = CloudflareImagesField(variant="custom")
+        field_file = CloudflareImagesFieldFile(None, field, "image_id")
+        self.assertEqual(
+            field_file.url_with_variant("thumbnail"),
+            "https://imagedelivery.net/account_hash/image_id/thumbnail",
+        )
+
+    @override_settings(CLOUDFLARE_IMAGES_DOMAIN="example.com")
+    def test_url_with_variant_with_custom_domain(self):
+        field = CloudflareImagesField()
+        field_file = CloudflareImagesFieldFile(None, field, "image_id")
+        self.assertEqual(
+            field_file.url_with_variant("thumbnail"),
+            "https://example.com/cdn-cgi/imagedelivery/account_hash/image_id/thumbnail",
+        )
+
+    @override_settings(CLOUDFLARE_IMAGES_SIGNING_KEY="secret")
+    def test_url_with_variant_private_storage(self):
+        storage = CloudflareImagesStorage(require_signed_urls=True)
+        field = CloudflareImagesField(storage=storage)
+        field_file = CloudflareImagesFieldFile(None, field, "image_id")
+        url = field_file.url_with_variant("thumbnail")
+        self.assertIn("/image_id/thumbnail?", url)
+        self.assertIn("&sig=", url)
+
     @override_settings(CLOUDFLARE_IMAGES_SIGNING_KEY="secret")
     @patch("cloudflare_images.service.time.time", return_value=1700000000)
     def test_signed_url_default_variant(self, mock_time):
