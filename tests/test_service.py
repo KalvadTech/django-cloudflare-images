@@ -113,6 +113,18 @@ class CloudflareImageServiceTests(TestCase):
         )
         self.assertEqual(url, hardcoded_url)
 
+    def test_get_blob_url(self):
+        url = self.service.get_blob_url("image_id")
+        hardcoded_url = (
+            "https://api.cloudflare.com/client/v4/accounts/account_id/"
+            "images/v1/image_id/blob"
+        )
+        self.assertEqual(url, hardcoded_url)
+
+    def test_get_blob_url_encodes_custom_id(self):
+        url = self.service.get_blob_url("folder/image")
+        self.assertIn("/images/v1/folder%2Fimage/blob", url)
+
     @patch("requests.post")
     def test_failed_get_one_time_upload_url(self, mock_post):
         mock_post.return_value = get_dummy_api_response(400, "", False)
@@ -296,3 +308,37 @@ class CloudflareImageServiceTests(TestCase):
         mock_get.return_value = get_dummy_api_response(200, b"content", False)
         self.service.open("image_id")
         self.assertNotIn("sig=", mock_get.call_args.args[0])
+
+    @patch("requests.get")
+    def test_open_original(self, mock_get):
+        mock_get.return_value = get_dummy_api_response(200, b"original", False)
+        result = self.service.open("image_id", original=True)
+        self.assertEqual(result, b"original")
+        self.assertEqual(
+            mock_get.call_args.args[0],
+            "https://api.cloudflare.com/client/v4/accounts/account_id/"
+            "images/v1/image_id/blob",
+        )
+        self.assertEqual(
+            mock_get.call_args.kwargs["headers"],
+            {"Authorization": "Bearer api_token"},
+        )
+
+    @override_settings(CLOUDFLARE_IMAGES_SIGNING_KEY="secret")
+    @patch("requests.get")
+    def test_open_original_ignores_variant_and_signed(self, mock_get):
+        mock_get.return_value = get_dummy_api_response(200, b"original", False)
+        self.service.open("image_id", "custom", signed=True, original=True)
+        self.assertNotIn("imagedelivery.net", mock_get.call_args.args[0])
+        self.assertIn("/images/v1/image_id/blob", mock_get.call_args.args[0])
+
+    @override_settings(CLOUDFLARE_IMAGES_API_TOKEN=None)
+    @patch("requests.get")
+    def test_open_original_without_api_token(self, mock_get):
+        self.assertRaises(
+            ImproperlyConfigured,
+            self.service.open,
+            "image_id",
+            original=True,
+        )
+        mock_get.assert_not_called()

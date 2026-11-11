@@ -89,3 +89,10 @@ class ConfigTests(TestCase):
     @override_settings(CLOUDFLARE_IMAGES_SIGNED_URL_TTL="not-a-number")
     def test_non_numeric_signed_url_ttl(self):
         self.assertRaises(ImproperlyConfigured, lambda: self.config.signed_url_ttl)
+
+    def test_original_image(self):
+        self.assertFalse(self.config.original_image)
+
+    @override_settings(CLOUDFLARE_IMAGES_ORIGINAL_IMAGE=True)
+    def test_custom_original_image(self):
+        self.assertTrue(self.config.original_image)

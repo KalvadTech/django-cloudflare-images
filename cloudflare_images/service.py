@@ -6,7 +6,7 @@ import hashlib
 import hmac
 import time
 from typing import Any
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import quote, urlsplit, urlunsplit
 
 import requests
 from django.core.exceptions import ImproperlyConfigured
@@ -114,23 +114,44 @@ class CloudflareImagesService:
             )
         )
 
+    def get_blob_url(self, name: str) -> str:
+        """
+        Returns the API URL used to retrieve the original image
+        """
+        return (
+            f"https://api.cloudflare.com/client/v4/accounts/"
+            f"{self.config.account_id}/images/v1/{quote(name, safe='')}/blob"
+        )
+
     def open(
         self,
         name: str,
         variant: str | None = None,
         *,
         signed: bool = False,
+        original: bool = False,
     ) -> bytes:
         """
         Retrieves a file and returns its content, otherwise raises an exception
         """
 
-        if signed:
+        if original:
+            api_token = self.config.api_token
+            if not api_token:
+                raise ImproperlyConfigured(
+                    "CLOUDFLARE_IMAGES_API_TOKEN must be set to fetch original images."
+                )
+            url = self.get_blob_url(name)
+            headers = {"Authorization": f"Bearer {api_token}"}
+            response = requests.get(
+                url, timeout=self.config.api_timeout, headers=headers
+            )
+        elif signed:
             url = self.get_signed_url(name, variant or self.config.variant)
+            response = requests.get(url, timeout=self.config.api_timeout)
         else:
             url = self.get_url(name, variant or self.config.variant)
-
-        response = requests.get(url, timeout=self.config.api_timeout)
+            response = requests.get(url, timeout=self.config.api_timeout)
 
         status_code = response.status_code
         if status_code != 200:

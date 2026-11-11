@@ -174,6 +174,45 @@ class CloudflareImageStorageTests(TestCase):
         self.assertEqual(storage.size("image_id"), 7)
         mock_open.assert_called_once_with("image_id", signed=True)
 
+    @override_settings(CLOUDFLARE_IMAGES_ORIGINAL_IMAGE=True)
+    @patch("cloudflare_images.service.CloudflareImagesService.open")
+    def test_original_image_from_setting(self, mock_open):
+        mock_open.return_value = b"original"
+        self.storage.open("image_id")
+        mock_open.assert_called_once_with("image_id", original=True)
+
+    @override_settings(CLOUDFLARE_IMAGES_ORIGINAL_IMAGE=True)
+    @patch("cloudflare_images.service.CloudflareImagesService.open")
+    def test_original_image_setting_overridden_false(self, mock_open):
+        mock_open.return_value = b"content"
+        storage = CloudflareImagesStorage(original_image=False)
+        storage.open("image_id")
+        mock_open.assert_called_once_with("image_id")
+
+    @patch("cloudflare_images.service.CloudflareImagesService.open")
+    def test_original_image_storage_override(self, mock_open):
+        mock_open.return_value = b"original"
+        storage = CloudflareImagesStorage(original_image=True)
+        storage.open("image_id")
+        mock_open.assert_called_once_with("image_id", original=True)
+
+    @override_settings(CLOUDFLARE_IMAGES_ORIGINAL_IMAGE=True)
+    @patch("cloudflare_images.service.CloudflareImagesService.open")
+    def test_original_image_size(self, mock_open):
+        mock_open.return_value = b"original"
+        self.assertEqual(self.storage.size("image_id"), 8)
+        mock_open.assert_called_once_with("image_id", original=True)
+
+    @patch("cloudflare_images.service.CloudflareImagesService.open")
+    def test_private_storage_original_image(self, mock_open):
+        mock_open.return_value = b"original"
+        storage = CloudflareImagesStorage(
+            require_signed_urls=True,
+            original_image=True,
+        )
+        storage.open("image_id")
+        mock_open.assert_called_once_with("image_id", original=True)
+
     @override_settings(CLOUDFLARE_IMAGES_SIGNING_KEY="secret")
     @patch("cloudflare_images.service.time.time", return_value=1700000000)
     def test_private_storage_url(self, mock_time):
@@ -221,6 +260,13 @@ class CloudflareImageStorageTests(TestCase):
         self.assertEqual(path, "cloudflare_images.storage.CloudflareImagesStorage")
         self.assertEqual(args, ())
         self.assertEqual(kwargs, {})
+
+    def test_original_image_storage_deconstruct(self):
+        storage = CloudflareImagesStorage(original_image=True)
+        path, args, kwargs = storage.deconstruct()  # ty: ignore[unresolved-attribute]
+        self.assertEqual(path, "cloudflare_images.storage.CloudflareImagesStorage")
+        self.assertEqual(args, ())
+        self.assertEqual(kwargs, {"original_image": True})
 
     def test_get_accessed_time(self):
         name = "image_id"
