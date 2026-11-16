@@ -1,3 +1,14 @@
+## 1.4.0
+
+### Features
+
+ * Added original image support through `CLOUDFLARE_IMAGES_ORIGINAL_IMAGE` and `CloudflareImagesStorage(original_image=True)`
+ * Added `url_with_variant()` to `CloudflareImagesFieldFile`
+
+### Improvements
+
+ * Added Python 3.15 support and aligned the test matrix with the supported Django versions
+
 ## 1.3.0
 
 ### Features
