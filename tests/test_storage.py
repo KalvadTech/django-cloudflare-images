@@ -250,20 +250,20 @@ class CloudflareImageStorageTests(TestCase):
 
     def test_private_storage_deconstruct(self):
         storage = CloudflareImagesStorage(require_signed_urls=True)
-        path, args, kwargs = storage.deconstruct()  # ty: ignore[unresolved-attribute]
+        path, args, kwargs = storage.deconstruct()  # ty: ignore[missing-attribute]
         self.assertEqual(path, "cloudflare_images.storage.CloudflareImagesStorage")
         self.assertEqual(args, ())
         self.assertEqual(kwargs, {"require_signed_urls": True})
 
     def test_public_storage_deconstruct(self):
-        path, args, kwargs = self.storage.deconstruct()  # ty: ignore[unresolved-attribute]
+        path, args, kwargs = self.storage.deconstruct()  # ty: ignore[missing-attribute]
         self.assertEqual(path, "cloudflare_images.storage.CloudflareImagesStorage")
         self.assertEqual(args, ())
         self.assertEqual(kwargs, {})
 
     def test_original_image_storage_deconstruct(self):
         storage = CloudflareImagesStorage(original_image=True)
-        path, args, kwargs = storage.deconstruct()  # ty: ignore[unresolved-attribute]
+        path, args, kwargs = storage.deconstruct()  # ty: ignore[missing-attribute]
         self.assertEqual(path, "cloudflare_images.storage.CloudflareImagesStorage")
         self.assertEqual(args, ())
         self.assertEqual(kwargs, {"original_image": True})
